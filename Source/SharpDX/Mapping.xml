@@ -24,5 +24,4 @@
   <depends>sharpdx-root</depends>
   <depends>sharpdx-core</depends>
   <depends>sharpdx-core-direct3d</depends>
-  <depends>sharpdx-core-multimedia</depends>
 </config>

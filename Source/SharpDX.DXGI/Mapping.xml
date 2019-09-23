@@ -175,7 +175,8 @@
     -->
     <map interface="IDXGI(.+)" name-tmp="$1" />
     <map interface="IDXGIObject" name="DXGIObject" />
-    <map interface="IDXGIDeviceSubObject" name="DeviceChild" />
+    <map interface="IDXGIDevice" name="DXGIDevice" />
+    <map interface="IDXGIDeviceSubObject" name="DXGIDeviceChild" />
     <map interface="IDXGIDebug" name="DXGIDebug" />
     <map interface="IDXGIDebug1" name="DXGIDebug1" />
 

@@ -24,7 +24,7 @@ using SharpDX.Direct3D;
 
 namespace SharpDX.DXGI
 {
-    public partial class DeviceChild
+    public partial class DXGIDeviceChild
     {
         /// <summary>
         /// Retrieves the device.
@@ -34,8 +34,8 @@ namespace SharpDX.DXGI
         /// <unmanaged>HRESULT IDXGIDeviceSubObject::GetDevice([In] GUID* riid,[Out] void** ppDevice)</unmanaged>
         public T GetDevice<T>() where T : ComObject
         {
-            IntPtr temp;
-            GetDevice(Utilities.GetGuidFromType(typeof(T)), out temp);
+            GetDevice(Utilities.GetGuidFromType(typeof(T)), out var temp);
+
             return FromPointer<T>(temp);
         }
 
@@ -51,15 +51,19 @@ namespace SharpDX.DXGI
             {
                 unsafe
                 {
-                    byte* pname = stackalloc byte[1024];
-                    int size = 1024 - 1;
-                    if (GetPrivateData(CommonGuid.DebugObjectName, ref size, new IntPtr(pname)).Failure)
+                    var size = 1024 - 1;
+                    var name = stackalloc byte[size + 1];
+
+                    if (GetPrivateData(CommonGuid.DebugObjectName, ref size, new IntPtr(name)).Failure)
+                    {
                         return string.Empty;
-                    pname[size] = 0;
-                    return Marshal.PtrToStringAnsi(new IntPtr(pname));
+                    }
+
+                    name[size] = 0;
+
+                    return Marshal.PtrToStringAnsi(new IntPtr(name));
                 }
             }
-
             set
             {
                 if (string.IsNullOrEmpty(value))
@@ -68,8 +72,7 @@ namespace SharpDX.DXGI
                 }
                 else
                 {
-                    var namePtr = Utilities.StringToHGlobalAnsi(value);
-                    SetPrivateData(CommonGuid.DebugObjectName, value.Length, namePtr);
+                    SetPrivateData(CommonGuid.DebugObjectName, value.Length, Utilities.StringToHGlobalAnsi(value));
                 }
             }
         }

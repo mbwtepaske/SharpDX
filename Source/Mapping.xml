@@ -494,8 +494,6 @@
     <define struct="SharpDX.Mathematics.Interop.RawInt4" sizeof="16" />
     <define struct="SharpDX.Mathematics.Interop.RawRectangle" sizeof="16" />
     <define struct="SharpDX.Mathematics.Interop.RawRectangleF" sizeof="16" />
-    <define struct="SharpDX.Multimedia.WaveFormat" sizeof="18" marshal="true" />
-    <define struct="SharpDX.Multimedia.WaveFormatExtensible" sizeof="18"  marshal="true" custom-new="true"/>
     <define struct="SharpDX.FunctionCallback" sizeof="8" />
     <define interface="SharpDX.ComObject" />
     <define interface="SharpDX.Direct3D.Blob"/>

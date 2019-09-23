@@ -29,12 +29,12 @@
   <!-- Direct3D includes -->
   <include file="d3dcommon.h" attach="true" output="Direct3D"/>
 
+  <!--
   <include file="d3d10_1.h"/>
   <include file="d3d10.h" namespace="SharpDX.Direct3D" output="Direct3D">
     <attach>ID3D10Multithread</attach>
   </include>
-
-  <naming />
+  -->
 
   <!-- Direct3D types -->
   <extension>
@@ -48,14 +48,6 @@
 
   <!-- Direct3D mapping -->
   <mapping>
-    <!--
-    // *****************************************************************
-    // Direct3D10 shared with Direct3D11
-    // *****************************************************************
-    -->
-    <context>d3d10</context>
-    <map interface="ID3D10Multithread" name="DeviceMultithread"/>
-    <map method="ID3D10Multithread::GetMultithreadProtected" property="false"/>
     <context-clear />
 
     <context>d3dcommon</context>

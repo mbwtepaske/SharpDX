@@ -46,17 +46,14 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 
 using SharpDX.Direct3D;
 using SharpDX.IO;
-using SharpDX.Text;
+
 using Encoding = SharpDX.Text.Encoding;
 
 namespace SharpDX.D3DCompiler
 {
-    using Multimedia;
-
     /// <summary>
     ///   Represents the compiled bytecode of a shader or effect.
     /// </summary>
