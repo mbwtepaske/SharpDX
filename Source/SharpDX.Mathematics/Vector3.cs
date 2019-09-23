@@ -60,7 +60,7 @@ namespace SharpDX
         /// <summary>
         /// The size of the <see cref="Vector3"/> type, in bytes.
         /// </summary>
-        public static readonly int SizeInBytes = Marshal.SizeOf(typeof(Vector3));
+        public static readonly int SizeInBytes = Utilities.SizeOf<Vector3>();
 
         /// <summary>
         /// A <see cref="Vector3"/> with all of its components set to zero.
@@ -511,6 +511,31 @@ namespace SharpDX
         public static Vector3 Negate(Vector3 value)
         {
             return new Vector3(-value.X, -value.Y, -value.Z);
+        }
+
+        /// <summary>
+        /// Returns per component absolute value of a vector
+        /// </summary>
+        /// <param name="value">Input vector</param>
+        /// <param name="result">When the method completes, contains a vector with each component being the absolute value of the input component</param>
+        public static void Abs(ref Vector3 value, out Vector3 result)
+        {
+            result = new Vector3(value.X > 0.0f ? value.X : -value.X,
+                value.Y > 0.0f ? value.Y : -value.Y,
+                value.Z > 0.0f ? value.Z : -value.Z);
+        }
+
+        /// <summary>
+        /// Returns per component absolute value of a vector
+        /// </summary>
+        /// <param name="value">Input vector</param>
+        /// <returns>A vector with each component being the absolute value of the input component</returns>
+        public static Vector3 Abs(Vector3 value)
+        {
+            return new Vector3(
+                value.X > 0.0f ? value.X : -value.X,
+                value.Y > 0.0f ? value.Y : -value.Y,
+                value.Z > 0.0f ? value.Z : -value.Z);
         }
 
         /// <summary>
@@ -1652,7 +1677,7 @@ namespace SharpDX
         /// <param name="left">The first value to compare.</param>
         /// <param name="right">The second value to compare.</param>
         /// <returns><c>true</c> if <paramref name="left"/> has the same value as <paramref name="right"/>; otherwise, <c>false</c>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public static bool operator ==(Vector3 left, Vector3 right)
         {
             return left.Equals(ref right);
@@ -1664,7 +1689,7 @@ namespace SharpDX
         /// <param name="left">The first value to compare.</param>
         /// <param name="right">The second value to compare.</param>
         /// <returns><c>true</c> if <paramref name="left"/> has a different value than <paramref name="right"/>; otherwise, <c>false</c>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public static bool operator !=(Vector3 left, Vector3 right)
         {
             return !left.Equals(ref right);
@@ -1770,7 +1795,7 @@ namespace SharpDX
         /// <returns>
         /// 	<c>true</c> if the specified <see cref="Vector3"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public bool Equals(ref Vector3 other)
         {
             return MathUtil.NearEqual(other.X, X) && MathUtil.NearEqual(other.Y, Y) && MathUtil.NearEqual(other.Z, Z);
@@ -1783,7 +1808,7 @@ namespace SharpDX
         /// <returns>
         /// 	<c>true</c> if the specified <see cref="Vector3"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public bool Equals(Vector3 other)
         {
             return Equals(ref other);

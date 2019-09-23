@@ -34,7 +34,21 @@
   <include file="dcommon.h" attach="true"/>
   <include file="d2d1.h" attach="true" />
   <include file="wincodec.h"/>
-  <include file="d2derr.h" attach="true" />
+  <ifdef name="DESKTOP_APP">
+    <include file="d2derr.h" attach="true" />
+  </ifdef>
+  <ifdef name="STORE_APP">
+    <include file="d2derr.h" attach="true">
+      <pre>
+        #undef WINAPI_FAMILY
+        #define WINAPI_FAMILY WINAPI_FAMILY_DESKTOP_APP
+      </pre>
+      <post>
+        #undef WINAPI_FAMILY
+        #define WINAPI_FAMILY WINAPI_FAMILY_APP
+      </post>
+    </include>
+  </ifdef>
   <include file="d2d1effects.h" attach="true" />
   <include file="d2d1_1.h" attach="true" />
   <include file="d2d1effectauthor.h" attach="true" />
@@ -43,6 +57,10 @@
   <include file="d2d1effectauthor_1.h" attach="true" />
   <include file="d2d1_3.h" attach="true" />
   <include file="d2d1effects_2.h" attach="true" />
+  <include file="d2d1svg.h" attach="true" />
+  <include file="winerror.h">
+    <attach>D2DERR_(.*)</attach>
+  </include>
 
   <naming />
   
@@ -50,7 +68,7 @@
     <context>sharpdx-direct2d1-ext</context>
     <context>dcommon</context>
     <context>d2d1</context>
-    <context>d2derr</context>
+    <context>D2DErr</context>
     <context>d2d1_1</context>
     <context>d2d1_2</context>
     <context>d2d1_3</context>
@@ -59,6 +77,8 @@
     <context>d2d1effects_2</context>
     <context>d2d1effectauthor</context>
     <context>d2d1effectauthor_1</context>
+    <context>d2d1svg</context>
+    <context>winerror</context>
     
     <const from-guid="CLSID_D2D1([A-Z].*)" class="SharpDX.Direct2D1.Effect" type="System.Guid" name="$1">new System.Guid("$1")</const>
     <const from-guid="CLSID_D2D12DAffineTransform" class="SharpDX.Direct2D1.Effect" type="System.Guid" name="AffineTransform2D">new System.Guid("$1")</const>
@@ -70,6 +90,8 @@
 
     <create class="D2D1" />
     <context-clear />
+
+    <define struct="SharpDX.DirectWrite.GdiInterop.FontSignature" sizeof="24" />
   </extension>
   
   <bindings>
@@ -84,6 +106,7 @@
     <bind from="D2D_POINT_2U" to="SharpDX.Mathematics.Interop.RawPoint" />
     <bind from="D2D_COLOR_F" to="SharpDX.Mathematics.Interop.RawColor4" />
     <bind from="D2D_MATRIX_3X2_F" to="SharpDX.Mathematics.Interop.RawMatrix3x2" />
+    <bind from="D2D_MATRIX_4X3_F" to="SharpDX.Mathematics.Interop.RawMatrix4x3" />
     <bind from="D2D_MATRIX_4X4_F" to="SharpDX.Mathematics.Interop.RawMatrix" />
     <bind from="D2D_MATRIX_5X4_F" to="SharpDX.Mathematics.Interop.RawMatrix5x4" />
     <bind from="IPrintDocumentPackageTarget" to="SharpDX.ComObject" />
@@ -103,6 +126,7 @@
     <context>d2d1effects_2</context>
     <context>d2d1effectauthor</context>
     <context>d2d1effectauthor_1</context>
+    <context>d2d1svg</context>
 
     <!--
     // *****************************************************************
@@ -227,12 +251,8 @@
     // *****************************************************************
     -->
     <map struct="D2D1(.*)" name-tmp="$1" />
-    <map field="D2D1_BLEND_DESCRIPTION::blendFactor" type="SHARPDX_COLOR4" array="0"/>
+    <map field="D2D1_BLEND_DESCRIPTION::blendFactor" type="SHARPDX_COLOR4" override-native-type="true" array="0"/>
     <map struct="D2D1_BITMAP_PROPERTIES1" struct-to-class="true"/>
-    <map field="D2D1_BITMAP_PROPERTIES1::colorContext" name="ColorContextPointer" visibility="internal"/>
-
-    <map field="D2D1_LAYER_PARAMETERS1::geometricMask" visibility="internal" name="GeometricMaskPointer"/>
-    <map field="D2D1_LAYER_PARAMETERS1::opacityBrush" visibility="internal" name="OpacityBrushPointer"/>
 
     <map struct="D2D1_PROPERTY_BINDING" struct-to-class="true" visibility="internal"/>
     <map field="D2D1_PROPERTY_BINDING::[gs]etFunction" visibility="internal"/>
@@ -257,13 +277,8 @@
     <map struct="D2D1_FEATURE_DATA_.*" visibility="internal"/>
 
     <map struct="D2D1_EFFECT_INPUT_DESCRIPTION" struct-to-class="true" />
-    <map field="D2D1_EFFECT_INPUT_DESCRIPTION::effect" name="EffectPointer" visibility="internal"/>
 
     <map struct="D2D1_MAPPED_RECT" visibility="internal"/>
-
-    <map field="D2D1_LAYER_PARAMETERS::geometricMask" name="GeometricMaskPointer" visibility="internal"/>
-    <map field="D2D1_LAYER_PARAMETERS::opacityBrush" name="OpacityBrushPointer" visibility="internal"/>
-
 
     <!--
     // *****************************************************************
@@ -285,7 +300,7 @@
     <map method="ID2D1Factory::GetDesktopDpi" visibility="internal" />
     <map method="ID2D(\d+)Factory\d?::Create.*" visibility="internal" />
 
-    <map param="ID2D1Factory[1234]::CreateDevice::d2dDevice[1234]?" attribute="out fast"/>
+    <map param="ID2D1Factory[123456]::CreateDevice::d2dDevice[12345]?" attribute="out fast"/>
     <map param="ID2D1Factory1::CreateStrokeStyle::strokeStyle" attribute="out fast"/>
     <map param="ID2D1Factory1::CreatePathGeometry::pathGeometry" attribute="out fast"/>
     <map param="ID2D1Factory1::CreateDrawingStateBlock::drawingStateBlock" attribute="out fast"/>
@@ -307,8 +322,8 @@
     <map param="ID2D(\d+)Factory::CreateDCRenderTarget::dcRenderTarget" attribute="out fast"/>
     <map param="ID2D(\d+)Factory::CreateWicBitmapRenderTarget::renderTarget" attribute="out fast"/>
 
-    <map method="ID2D\dDevice[123]?::Create.*" visibility="internal"/>
-    <map param="ID2D\dDevice[123]?::CreateDeviceContext::deviceContext[123]?" attribute="out fast"/>
+    <map method="ID2D\dDevice[12345]?::Create.*" visibility="internal"/>
+    <map param="ID2D\dDevice[12345]?::CreateDeviceContext::deviceContext[12345]?" attribute="out fast"/>
     <map param="ID2D\dDevice::CreatePrintControl::printControl" attribute="out fast"/>
 
     <map method="ID2D\dDeviceContext[123]?::Create.*" visibility="internal"/>
@@ -339,7 +354,7 @@
 
     <map method="ID2D1Geometry::CombineWithGeometry" name="Combine" />
     <map method="ID2D1Geometry::CompareWithGeometry" name="Compare" />
-    <map param="relation" return="true" />
+    <map param="ID2D1Geometry::CompareWithGeometry::relation" return="true" />
     <map param="ID2D1Geometry::ComputeArea::area" return="true" />
     <map param="ID2D1Geometry::ComputeLength::length" return="true" />
     <map param="ID2D1Geometry::ComputePointAtLength::point" return="true" />
@@ -367,13 +382,16 @@
     <map param="ID2D(\d+)RenderTarget::CreateLayer::layer" attribute="out fast"/>
     <map param="ID2D(\d+)RenderTarget::CreateMesh::mesh" attribute="out fast"/>
 
+    <map method="ID2D(\d+)RenderTarget::EndDraw" hresult="true" check="false" visibility="public" name="TryEndDraw"/>
+
     <map param="ID2D(\d+)RenderTarget::CreateSharedBitmap::data" attribute="in" />
     <map method="ID2D1RenderTarget::DrawTextA" visibility="internal" name="DrawText" />
     <map method="ID2D1RenderTarget::(.*)Dpi" visibility="internal" />
     <map method="ID2D(\d+)Mesh::Open" visibility="internal" name="Open_" />
-    <map interface="ID2D(\d+).*Sink1?" callback="true" callback-dual="true" />
-    <map interface="ID2D(\d+).*Sink2?" callback="true" callback-dual="true" />
-    <map interface="ID2D(\d+).*Sink3?" callback="true" callback-dual="true" />
+    <map interface="ID2D(\d+).*Sink1?" callback="true" callback-dual="true" callback-visibility="internal" />
+    <map interface="ID2D(\d+).*Sink2?" callback="true" callback-dual="true" callback-visibility="internal" />
+    <map interface="ID2D(\d+).*Sink3?" callback="true" callback-dual="true" callback-visibility="internal" />
+    <map interface="ID2D(\d+).*Sink4?" callback="true" callback-dual="true" callback-visibility="internal" />
 
     <!--<map param="ID2D1DeviceContext::CreateColorContextFromWicColorContext::wicColorContext" type="IUnknown"/>
     <map param="ID2D1DeviceContext::CreateColorContextFromWicColorContext::colorContext" type="IUnknown"/>-->
@@ -390,6 +408,7 @@
     <map method="ID2D1DeviceContext::GetEffectInvalidRectangles" visibility="internal"/>
     <map method="ID2D1DeviceContext::GetEffectRequiredInputRectangles" visibility="internal"/>
 
+    <map method="ID2D1Factory1::RegisterEffectFromStream" visibility="internal" />
     <map method="ID2D1Factory1::RegisterEffectFromString" visibility="internal"/>
     <map method="ID2D1Factory1::UnregisterEffect" visibility="internal"/>
 
@@ -401,7 +420,7 @@
     
     <map param="ID2D1Effect::GetInput::input" return="true"/>
     
-    <map interface="ID2D1EffectImpl" name="CustomEffect" callback="true" callback-dual="true" />
+    <map interface="ID2D1EffectImpl" name="CustomEffect" callback="true" callback-dual="true" callback-visibility="internal" />
     
     <map method="ID2D1EffectContext::GetDpi" visibility="internal"/>
 
@@ -468,6 +487,15 @@
     <map interface="ID2D1ComputeTransform" callback-visibility="public" callback="true" callback-dual="true" />
     <map interface="ID2D1DrawTransform" callback-visibility="public" callback="true" callback-dual="true" />
     <map interface="ID2D1SourceTransform" callback-visibility="public" callback="true" callback-dual="true" />
+
+    <map param="ID2D\dDeviceContext5::CreateColorContextFromDxgiColorSpace::colorContext" attribute="out fast"/>
+    <map param="ID2D\dDeviceContext5::CreateColorContextFromSimpleColorProfile::colorContext" attribute="out fast"/>
+    <map param="ID2D\dEffectContext2::CreateColorContextFromDxgiColorSpace::colorContext" attribute="out fast"/>
+    <map param="ID2D\dEffectContext2::CreateColorContextFromSimpleColorProfile::colorContext" attribute="out fast"/>
+    
+    <!-- Svg documents and elements -->
+    <map method="ID2D1SvgDocument::FindElementById" hresult="true" check="false" visibility="private" name="TryFindElementById_"/>
+    <map method="ID2D1SvgAttribute::Clone" visibility="internal" />
 
     <!--
     // *****************************************************************

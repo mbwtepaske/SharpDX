@@ -58,8 +58,7 @@ namespace SharpDX.WIC
         {
             factory.CreateStream(this);
             streamProxy = new ComStreamProxy(stream);
-            var istreamPtr = ComStreamShadow.ToIntPtr(streamProxy);
-            InitializeFromIStream_(istreamPtr);
+            InitializeFromIStream(streamProxy);
         }
 
         /// <summary>
@@ -79,13 +78,13 @@ namespace SharpDX.WIC
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             if (streamProxy != null)
             {
                 streamProxy.Dispose();
                 streamProxy = null;
             }
-
-            base.Dispose(disposing);
         }
     }
 }

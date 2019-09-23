@@ -17,7 +17,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+using System.Runtime.InteropServices;
 
 namespace SharpDX.XAudio2
 {
@@ -49,6 +51,23 @@ namespace SharpDX.XAudio2
         /// Called if a critical system error occurs that requires XAudio2 to be closed down and restarted.
         /// </summary>
         public event EventHandler<ErrorEventArgs> CriticalError;
+
+#if !WINDOWS_UWP
+        private const uint RPC_E_CHANGED_MODE = 0x80010106;
+        private const uint COINIT_MULTITHREADED = 0x0;
+        private const uint COINIT_APARTMENTTHREADED = 0x2;
+        
+        static XAudio2()
+        {
+            if (CoInitializeEx(IntPtr.Zero, COINIT_APARTMENTTHREADED) == RPC_E_CHANGED_MODE)
+            {
+                CoInitializeEx(IntPtr.Zero, COINIT_MULTITHREADED);
+            }
+        }
+
+        [DllImport("ole32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+        private static extern uint CoInitializeEx([In, Optional] IntPtr pvReserved, [In]uint dwCoInit);
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="XAudio2"/> class.
@@ -85,7 +104,7 @@ namespace SharpDX.XAudio2
             {
                 switch (tryVersion)
                 {
-#if DESKTOP_APP
+#if !WINDOWS_UWP
                     case XAudio2Version.Version27:
                         Guid clsid = ((int)flags == 1) ? CLSID_XAudio27_Debug : CLSID_XAudio27;
                         if ((requestedVersion == XAudio2Version.Default || requestedVersion == XAudio2Version.Version27) && Utilities.TryCreateComInstance(clsid, Utilities.CLSCTX.ClsctxInprocServer, IID_IXAudio2, this))
@@ -105,7 +124,6 @@ namespace SharpDX.XAudio2
                         }
                         catch (DllNotFoundException) { }
                         break;
-#if STORE_APP_10
                     case XAudio2Version.Version29:
                         try
                         {
@@ -114,7 +132,6 @@ namespace SharpDX.XAudio2
                         }
                         catch (DllNotFoundException) { }
                         break;
-#endif
                 }
 
                 // Early exit if we found a requestedVersion
@@ -133,7 +150,7 @@ namespace SharpDX.XAudio2
 
             engineCallbackImpl = new EngineCallbackImpl(this);
             engineShadowPtr = EngineShadow.ToIntPtr(engineCallbackImpl);
-            RegisterForCallbacks_(engineShadowPtr);
+            RegisterForCallbacks(engineCallbackImpl);
         }
 
         /// <summary>
@@ -154,9 +171,9 @@ namespace SharpDX.XAudio2
         /// </summary>
         private void SetupVtblFor27()
         {
-            RegisterForCallbacks___vtbl_index += 3;
-            UnregisterForCallbacks___vtbl_index += 3;
-            CreateSourceVoice___vtbl_index += 3;
+            RegisterForCallbacks__vtbl_index += 3;
+            UnregisterForCallbacks__vtbl_index += 3;
+            CreateSourceVoice__vtbl_index += 3;
             CreateSubmixVoice__vtbl_index += 3;
             CreateMasteringVoice__vtbl_index += 3;
             StartEngine__vtbl_index += 3;
@@ -166,7 +183,7 @@ namespace SharpDX.XAudio2
             SetDebugConfiguration__vtbl_index += 3;
         }
 
-        private void CheckVersion27()
+        internal void CheckVersion27()
         {
             if (Version != XAudio2Version.Version27)
             {
@@ -177,7 +194,7 @@ namespace SharpDX.XAudio2
         /// <summary>	
         /// No documentation.	
         /// </summary>	
-        /// <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='IXAudio2::GetDeviceCount']/*" />	
+        /// <!-- No matching elements were found for the following include tag --><include file="Documentation\CodeComments.xml" path="/comments/comment[@id='IXAudio2::GetDeviceCount']/*" />	
         /// <unmanaged>GetDeviceCount</unmanaged>	
         /// <unmanaged-short>GetDeviceCount</unmanaged-short>	
         /// <unmanaged>HRESULT IXAudio2::GetDeviceCount([Out] unsigned int* pCount)</unmanaged>
@@ -197,7 +214,7 @@ namespace SharpDX.XAudio2
         /// </summary>	
         /// <param name="countRef">No documentation.</param>	
         /// <returns>No documentation.</returns>	
-        /// <!-- No matching elements were found for the following include tag --><include file=".\..\Documentation\CodeComments.xml" path="/comments/comment[@id='IXAudio2::GetDeviceCount']/*" />	
+        /// <!-- No matching elements were found for the following include tag --><include file="Documentation\CodeComments.xml" path="/comments/comment[@id='IXAudio2::GetDeviceCount']/*" />	
         /// <unmanaged>HRESULT IXAudio2::GetDeviceCount([Out] unsigned int* pCount)</unmanaged>	
         /// <unmanaged-short>IXAudio2::GetDeviceCount</unmanaged-short>	
         private unsafe void GetDeviceCount(out int countRef)
@@ -205,7 +222,7 @@ namespace SharpDX.XAudio2
 	        Result result;
 	        fixed (void* ptr = &countRef)
 	        {
-		        result = LocalInterop.Calliint(this._nativePointer, ptr, *(*(void***)this._nativePointer + 3));
+		        result = LocalInterop.CalliGetDeviceCount(this._nativePointer, ptr, *(*(void***)this._nativePointer + 3));
 	        }
 	        result.CheckError();
         }
@@ -218,7 +235,7 @@ namespace SharpDX.XAudio2
 	        {
 		        value = effectChainRef.Value;
 	        }
-	        Result result = LocalInterop.Calliint(this._nativePointer, (void*)&zero, inputChannels, inputSampleRate, flags, deviceIndex, effectChainRef.HasValue ? ((void*)(&value)) : ((void*)IntPtr.Zero), *(*(void***)this._nativePointer + 10));
+	        Result result = LocalInterop.CalliCreateMasteringVoice(this._nativePointer, (void*)&zero, inputChannels, inputSampleRate, flags, deviceIndex, effectChainRef.HasValue ? ((void*)(&value)) : ((void*)IntPtr.Zero), *(*(void***)this._nativePointer + 10));
 	        masteringVoiceOut.NativePointer = zero;
 	        result.CheckError();
         }
@@ -241,7 +258,7 @@ namespace SharpDX.XAudio2
         private unsafe void GetDeviceDetails(int index, out DeviceDetails deviceDetailsRef)
         {
 	        DeviceDetails.__Native _Native = default(DeviceDetails.__Native);
-	        Result result = LocalInterop.Calliint(this._nativePointer, index, &_Native, *(*(void***)this._nativePointer + 4));
+	        Result result = LocalInterop.CalliGetDeviceDetails(this._nativePointer, index, &_Native, *(*(void***)this._nativePointer + 4));
 	        deviceDetailsRef = default(DeviceDetails);
 	        deviceDetailsRef.__MarshalFrom(ref _Native);
 	        result.CheckError();
@@ -249,7 +266,7 @@ namespace SharpDX.XAudio2
 
         private unsafe void Initialize(int flags, ProcessorSpecifier xAudio2Processor)
         {
-	        var result = (Result)LocalInterop.Calliint(this._nativePointer, (int)flags, (int)xAudio2Processor, *(*(void***)this._nativePointer + 5));
+	        var result = (Result)LocalInterop.CalliInitialize(this._nativePointer, (int)flags, (int)xAudio2Processor, *(*(void***)this._nativePointer + 5));
             result.CheckError();
         }
 
@@ -335,8 +352,8 @@ namespace SharpDX.XAudio2
 
         protected override void Dispose(bool disposing)
         {
-            if (engineShadowPtr != IntPtr.Zero)
-                UnregisterForCallbacks_(engineShadowPtr);
+            if (engineCallbackImpl != null)
+                UnregisterForCallbacks(engineCallbackImpl);
 
             if (disposing)
             {

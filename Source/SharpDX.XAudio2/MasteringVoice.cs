@@ -57,6 +57,10 @@ namespace SharpDX.XAudio2
         public MasteringVoice(XAudio2 device, int inputChannels, int inputSampleRate, string deviceId)
             : base(device)
         {
+            if (device.Version == XAudio2Version.Version27)
+            {
+                throw new InvalidOperationException("This method is only valid on XAudio 2.8 or XAudio 2.9 version");
+            }
 
             device.CreateMasteringVoice(this, inputChannels, inputSampleRate, 0, deviceId, null, AudioStreamCategory.GameEffects);
         }
@@ -72,6 +76,7 @@ namespace SharpDX.XAudio2
         public MasteringVoice(XAudio2 device, int inputChannels, int inputSampleRate, int deviceIndex)
             : base(device)
         {
+            device.CheckVersion27();
             device.CreateMasteringVoice27(this, inputChannels, inputSampleRate, 0, deviceIndex, null);
         }
 
@@ -81,7 +86,7 @@ namespace SharpDX.XAudio2
         /// <remarks>	
         /// <p>The <em>pChannelMask</em> argument is a bit-mask of the various channels in the speaker geometry reported by the audio system. This information is needed for the <strong><see cref="SharpDX.X3DAudio.X3DAudio.X3DAudioInitialize"/></strong> <em>SpeakerChannelMask</em> parameter. </p><p>The X3DAUDIO.H header declares a number of <strong>SPEAKER_</strong> positional defines to decode these channels masks. </p><p>Examples include: </p><pre><see cref="SharpDX.Multimedia.Speakers.Stereo"/> // <see cref="SharpDX.Multimedia.Speakers.FrontLeft"/> (0x1) | <see cref="SharpDX.Multimedia.Speakers.FrontRight"/> (0x2)  <see cref="SharpDX.Multimedia.Speakers.FivePointOne"/> // <see cref="SharpDX.Multimedia.Speakers.FrontLeft"/> (0x1) | <see cref="SharpDX.Multimedia.Speakers.FrontRight"/> (0x2) // | <see cref="SharpDX.Multimedia.Speakers.FrontCenter"/> (0x4) // | <see cref="SharpDX.Multimedia.Speakers.LowFrequency"/> (0x8) // | <see cref="SharpDX.Multimedia.Speakers.BackLeft"/> (0x10) | <see cref="SharpDX.Multimedia.Speakers.BackRight"/> (0x20)</pre><p><strong>Note</strong>??For the DirectX SDK versions of XAUDIO, the channel mask for the output device was obtained via the <strong>IXAudio2::GetDeviceDetails</strong> method, which doesn't exist in Windows?8 and later.</p>	
         /// </remarks>	
-        /// <include file='.\..\Documentation\CodeComments.xml' path="/comments/comment[@id='IXAudio2MasteringVoice::GetChannelMask']/*"/>	
+        /// <include file='Documentation\CodeComments.xml' path="/comments/comment[@id='IXAudio2MasteringVoice::GetChannelMask']/*"/>	
         /// <msdn-id>microsoft.directx_sdk.ixaudio2masteringvoice.ixaudio2masteringvoice.getchannelmask</msdn-id>	
         /// <unmanaged>GetChannelMask</unmanaged>	
         /// <unmanaged-short>GetChannelMask</unmanaged-short>	

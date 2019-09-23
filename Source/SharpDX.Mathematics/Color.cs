@@ -107,6 +107,7 @@ namespace SharpDX
         /// <param name="red">The red component of the color.</param>
         /// <param name="green">The green component of the color.</param>
         /// <param name="blue">The blue component of the color.</param>
+        /// <param name="alpha">The alpha component of the color</param>
         public Color(int red, int green, int blue, int alpha)
         {
             R = ToByte(red);
@@ -368,7 +369,7 @@ namespace SharpDX
         /// <summary>
         /// Gets the brightness.
         /// </summary>
-        /// <returns>The Hue-Saturation-Brightness (HSB) saturation for this <see cref="Color"/></returns>
+        /// <returns>The Hue-Saturation-Brightness (HSB) brightness for this <see cref="Color"/></returns>
         public float GetBrightness()
         {
             float r = (float)R / 255.0f;
@@ -391,7 +392,7 @@ namespace SharpDX
         /// <summary>
         /// Gets the hue.
         /// </summary>
-        /// <returns>The Hue-Saturation-Brightness (HSB) saturation for this <see cref="Color"/></returns>
+        /// <returns>The Hue-Saturation-Brightness (HSB) hue for this <see cref="Color"/></returns>
         public float GetHue()
         {
             if (R == G && G == B)
@@ -986,7 +987,7 @@ namespace SharpDX
         /// <param name="left">The first value to compare.</param>
         /// <param name="right">The second value to compare.</param>
         /// <returns><c>true</c> if <paramref name="left"/> has the same value as <paramref name="right"/>; otherwise, <c>false</c>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public static bool operator ==(Color left, Color right)
         {
             return left.Equals(ref right);
@@ -998,7 +999,7 @@ namespace SharpDX
         /// <param name="left">The first value to compare.</param>
         /// <param name="right">The second value to compare.</param>
         /// <returns><c>true</c> if <paramref name="left"/> has a different value than <paramref name="right"/>; otherwise, <c>false</c>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public static bool operator !=(Color left, Color right)
         {
             return !left.Equals(ref right);
@@ -1229,7 +1230,7 @@ namespace SharpDX
         /// <returns>
         /// <c>true</c> if the specified <see cref="Color"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public bool Equals(ref Color other)
         {
             return R == other.R && G == other.G && B == other.B && A == other.A;
@@ -1242,7 +1243,7 @@ namespace SharpDX
         /// <returns>
         /// <c>true</c> if the specified <see cref="Color"/> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl((MethodImplOptions)0x100)] // MethodImplOptions.AggressiveInlining
         public bool Equals(Color other)
         {
             return Equals(ref other);

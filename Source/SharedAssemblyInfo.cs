@@ -22,31 +22,4 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly:AssemblyCompany("Alexandre Mutel")]
-[assembly:AssemblyCopyright("Copyright © 2010-2016 Alexandre Mutel")]
-
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-[assembly:AssemblyVersion("3.0.2")]
-[assembly:AssemblyFileVersion("3.0.2")]
-
-[assembly: NeutralResourcesLanguage("en-us")]
-
-#if DEBUG
-[assembly:AssemblyConfiguration("Debug")]
-#else
-[assembly:AssemblyConfiguration("Release")]
-#endif
-
 [assembly:ComVisible(false)]
-
-#if STORE_APP
-[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when public and interface: renaming", Exclude = false, ApplyToMembers = true)]
-[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when struct: renaming", Exclude = false, ApplyToMembers = true)]
-[assembly: Obfuscation(Feature = "Apply to type SharpDX.*: INotifyPropertyChanged heuristics", Exclude = true)]
-[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when enum: forced rename", Exclude = false)]
-[assembly: Obfuscation(Feature = "Apply to type SharpDX.* when enum: enum values pruning", Exclude = false)]
-[assembly: Obfuscation(Feature = "legacy xml serialization heuristics", Exclude = true)]
-[assembly: Obfuscation(Feature = "ignore InternalsVisibleToAttribute", Exclude = false)]
-#endif

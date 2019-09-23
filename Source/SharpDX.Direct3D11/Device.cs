@@ -190,15 +190,6 @@ namespace SharpDX.Direct3D11
             {
                 swapChain = new SwapChain(factory, device, swapChainDescription);
             }
-
-            var context = device.ImmediateContext;
-
-            if (context != null)
-            {
-                context.Device__ = device;
-            }
-
-            device.ImmediateContext__ = context;
         }
 
         /// <summary>
@@ -410,6 +401,38 @@ namespace SharpDX.Direct3D11
         }
 
         /// <summary>
+        /// Retrieves additional information about Direct3D11.3 feature options in the current graphics driver
+        /// </summary>
+        /// <msdn-id>dn933226</msdn-id>
+        /// <returns>Returns a structure <see cref="FeatureDataD3D11Options4"/> </returns>	
+        public FeatureDataD3D11Options4 CheckD3D113Features4()
+        {
+            unsafe
+            {
+                var support = default(FeatureDataD3D11Options4);
+                if (CheckFeatureSupport(Feature.D3D11Options4, new IntPtr(&support), Utilities.SizeOf<FeatureDataD3D11Options4>()).Failure)
+                    return default(FeatureDataD3D11Options4);
+                return support;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves additional information about Direct3D11.4 feature options in the current graphics driver
+        /// </summary>
+        /// <msdn-id>dn933226</msdn-id>
+        /// <returns>Returns a structure <see cref="FeatureDataD3D11Options5"/> </returns>	
+        public FeatureDataD3D11Options5 CheckD3D113Feature5()
+        {
+            unsafe
+            {
+                var support = default(FeatureDataD3D11Options5);
+                if (CheckFeatureSupport(Feature.D3D11Options5, new IntPtr(&support), Utilities.SizeOf<FeatureDataD3D11Options5>()).Failure)
+                    return default(FeatureDataD3D11Options5);
+                return support;
+            }
+        }
+
+        /// <summary>
         /// Check if this device is supporting a feature.
         /// </summary>
         /// <param name="feature">The feature to check.</param>
@@ -582,8 +605,10 @@ namespace SharpDX.Direct3D11
             {
                 try
                 {
-                    var switchToRef = QueryInterface<SwitchToRef>();
-                    return switchToRef.UseRef;
+                    using(var switchToRef = QueryInterface<SwitchToRef>())
+                    {
+                        return switchToRef.GetUseRef();
+                    }
                 }
                 catch (SharpDXException)
                 {
@@ -685,6 +710,7 @@ namespace SharpDX.Direct3D11
             Device devOut;
             DeviceContext contextOut;
             FeatureLevel featurelevelOut;
+
             D3D11.On12CreateDevice(d3D12Device, flags, featureLevels, featureLevels == null ? 0 : featureLevels.Length, commandQueues, commandQueues.Length, 0, out devOut, out contextOut, out featurelevelOut);
             contextOut.Dispose();
             return devOut;

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 // Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,14 +26,14 @@
 
   <namespace>SharpDX.DirectWrite</namespace>
   <assembly>SharpDX.Direct2D1</assembly>
-  
-  <include file="dwrite.h" attach="true" output="DirectWrite"/>
-  <include file="dwrite_1.h" attach="true" output="DirectWrite"/>
-  <include file="dwrite_2.h" attach="true" output="DirectWrite"/>
-  <include file="dwrite_3.h" attach="true" output="DirectWrite"/>
+
+  <include file="DWrite.h" attach="true" output="DirectWrite"/>
+  <include file="DWrite_1.h" attach="true" output="DirectWrite"/>
+  <include file="DWrite_2.h" attach="true" output="DirectWrite"/>
+  <include file="DWrite_3.h" attach="true" output="DirectWrite"/>
 
   <naming />
-  
+
   <extension>
     <create class="DWrite" />
   </extension>
@@ -43,10 +43,10 @@
   </bindings>
 
   <mapping>
-    <context>dwrite</context>
-    <context>dwrite_1</context>
-    <context>dwrite_2</context>
-    <context>dwrite_3</context>
+    <context>DWrite_1</context>
+    <context>DWrite</context>
+    <context>DWrite_2</context>
+    <context>DWrite_3</context>
 
     <!--
     // *****************************************************************
@@ -110,6 +110,7 @@
     <map param="IDWriteFactory::CreateTextAnalyzer::textAnalyzer" attribute="out fast"/>
     <map param="IDWriteFactory::CreateNumberSubstitution::numberSubstitution" attribute="out fast"/>
     <map param="IDWriteFactory::CreateGlyphRunAnalysis::glyphRunAnalysis" attribute="out fast"/>
+    <map method="IDWriteFactory::((Unr|R)egisterFont(File|Collection)Loader)" visibility="internal" name="$1_" />
 
 
     <map param="IDWriteFactory::GetSystemFontCollection::fontCollection" return="true" />
@@ -124,7 +125,7 @@
 
     <map param="IDWriteFont::HasCharacter::exists" return="true" />
     <map param="IDWriteFont::GetInformationalStrings::exists" return="true" />
-    
+
     <map method="IDWriteFontFace::GetFiles" visibility="internal" />
     <map method="IDWriteFontFace::GetDesignGlyphMetrics" visibility="internal" />
     <map method="IDWriteFontFace::GetGdiCompatibleGlyphMetrics" visibility="internal" />
@@ -133,6 +134,9 @@
     <map param="IDWriteFontFace::GetRecommendedRenderingMode::renderingMode" return="true" />
     <map method="IDWriteFontFace::TryGetFontTable" visibility="internal" />
     <map method="IDWriteFontFace::GetType" name="GetFaceType" />
+
+    <map param="IDWriteFontFallback::MapCharacters::mappedLength" attribute="out" />
+
     <map param="IDWriteFontList::GetFont::font" return="true" />
     <map param="IDWriteFontFamily::GetFirstMatchingFont::matchingFont" return="true" />
     <map param="IDWriteFontFamily::GetMatchingFonts::matchingFonts" return="true" />
@@ -141,7 +145,7 @@
     <map param="IDWriteFontCollection::GetFontFromFontFace::font" return="true" />
     <map interface="IDWriteFontCollectionLoader" callback="true" callback-dual="false" />
     <map method="IDWriteFontFile::GetLoader" visibility="internal" property="false" />
-    
+
     <map interface="IDWriteFontFileLoader" callback-visibility="public" callback="true" callback-dual="true" />
 
     <map interface="IDWriteFontFileEnumerator" callback="true" callback-dual="false" />
@@ -149,12 +153,12 @@
     <map interface="IDWriteTextRenderer" callback="true" callback-dual="false" />
     <map interface="IDWriteTextRenderer1" callback="true" callback-dual="false" />
     <map method="IDWriteGdiInterop::.*?LOGFONT" visibility="internal" />
-    <map param="logFont" type="void" attribute="in" />
+    <map param="IDWriteGdiInterop::.*?LOGFONT::logFont" type="void" override-native-type="true" attribute="in" />
     <map param="IDWriteGdiInterop::CreateBitmapRenderTarget::renderTarget" return="true" />
     <map param="IDWriteGdiInterop::CreateFontFaceFromHdc::fontFace" return="true" />
-      
+
     <map method="IDWriteGdiInterop1::.*?LOGFONT" visibility="internal" />
-    <map param="logFont" type="void" attribute="in" />
+    <map param="IDWriteGdiInterop1::.*?LOGFONT::logFont" type="void" override-native-type="true" attribute="in" />
     <map param="IDWriteGdiInterop1::CreateBitmapRenderTarget::renderTarget" return="true" />
     <map param="IDWriteGdiInterop1::CreateFontFaceFromHdc::fontFace" return="true" />
     <map param="IDWriteGdiInterop1::GetFontSignature::fontSignature" return="true" />
@@ -187,11 +191,11 @@
     <map method="IDWriteTextLayout::GetLocaleName" visibility="internal" />
     <map method="IDWriteTextLayout::GetLocaleNameLength" visibility="internal" />
     <map method="IDWriteTextLayout::GetStrikethrough" name="HasStrikethrough" />
-    <map param="hasStrikethrough" return="true" />
+    <map param="IDWriteTextLayout::GetStrikethrough::hasStrikethrough" return="true" />
     <map param="IDWriteTextLayout::GetTypography::typography" return="true" />
     <map method="IDWriteTextLayout::GetUnderline" name="HasUnderline" />
-    <map param="hasUnderline" return="true" />
-    <map method="IDWriteTextLayout::([GS]etDrawingEffect)" visibility="internal" name="$1_" />
+    <map param="IDWriteTextLayout::GetUnderline::hasUnderline" return="true" />
+    <map method="IDWriteTextLayout::GetDrawingEffect" visibility="internal" name="GetDrawingEffect_" />
     <map param="IDWriteTextLayout::[GS]etDrawingEffect::drawingEffect" type="void" />
     <map method="IDWriteTextFormat::GetFontFamilyName" visibility="internal" />
     <map method="IDWriteTextFormat::GetLocaleName" visibility="internal" />
@@ -203,17 +207,28 @@
     <map param="IDWriteTypography::GetFontFeature::fontFeature" return="true" />
 
     <map method="IDWriteTextAnalyzer::Get.*Glyph.*" visibility="internal"/>
-    <map param="features" type="void" attribute="in optional"/>
+    <map param="IDWriteTextAnalyzer::Get.*Glyph.*::features" type="void" attribute="in optional" override-native-type="true" />
 
     <map method="IDWriteTextLayout::GetLineMetrics" check="false"/>
     <map method="IDWriteTextLayout::HitTestTextRange" check="false"/>
     <map method="IDWriteTextLayout::GetClusterMetrics" check="false"/>
-    
+
     <map method="IDWriteLocalFontFileLoader::GetFilePath.*" visibility="internal"/>
     <map method="IDWriteLocalFontFileLoader::GetLastWriteTimeFromKey" visibility="internal"/>
 
     <map method="IDWriteBitmapRenderTarget::DrawGlyphRun" visibility="private"/>
     <map param="IDWriteBitmapRenderTarget::DrawGlyphRun::textColor" type="int"/>
+
+
+    <map param="IDWriteRemoteFontFileStream::BeginDownload::asyncResult" return="true" />
+    <map method="IDWriteAsyncResult::GetResult" check="false"/>
+    
+    <map param="IDWriteColorGlyphRunEnumerator(\d*)::GetCurrentRun::colorGlyphRun" type="void" override-native-type="true" />
+    <map method="IDWriteColorGlyphRunEnumerator(\d*)::GetCurrentRun" visibility="internal" property="false" />
+    
+    <!-- Factory 2 -->
+    <map method="IDWriteFactory2::TranslateColorGlyphRun" hresult="true" check="false" visibility="public" name="TryTranslateColorGlyphRun" />
+
 
     <!--
     // *****************************************************************

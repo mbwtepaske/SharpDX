@@ -29,24 +29,30 @@
   <!-- DXGI includes -->
   <include id="dxgi" file="dxgi.h" attach="true" />
   <include id="dxgiformat" file="dxgiformat.h" attach="true" />
+  <include id="dxgidebug" file="dxgidebug.h" attach="true" />
   <include id="winerror" file="winerror.h"/>
   <include id="dxgitype" file="dxgitype.h" attach="true"/>
+  <include id="dxgicommon" file="dxgicommon.h" attach="true"/>
   <include id="dxgi1_2" file="dxgi1_2.h" attach="true" />
   <include id="windows.ui.xaml.media.dxinterop" file="windows.ui.xaml.media.dxinterop.h" attach="true" />
   <include id="dxgi1_3" file="dxgi1_3.h" attach="true" />
   <include id="dxgi1_4" file="dxgi1_4.h" attach="true" />
   <include id="dxgi1_5" file="dxgi1_5.h" attach="true" />
+  <include id="dxgi1_6" file="dxgi1_6.h" attach="true" />
 
   <context-set id="dxgi-all">
     <context>sharpdx-dxgi</context>
     <context>sharpdx-dxgi-ext</context>
     <context>dxgi</context>
     <context>dxgiformat</context>
+    <context>dxgidebug</context>
     <context>dxgitype</context>
+    <context>dxgicommon</context>
     <context>dxgi1_2</context>
     <context>dxgi1_3</context>
     <context>dxgi1_4</context>
     <context>dxgi1_5</context>
+    <context>dxgi1_6</context>
     <context>winerror</context>
     <context>windows.ui.xaml.media.dxinterop</context>
   </context-set>
@@ -127,8 +133,8 @@
     <map struct="DXGI(.+)" name-tmp="$1" />
     <remove struct="DXGI_DISPLAY_COLOR_SPACE" />
 
-    <map field="DXGI_ADAPTER_DESC[12]?::AdapterLuid" name="Luid" />
-    <map field="DXGI_ADAPTER_DESC[12]?::SubSysId" name="SubsystemId" />
+    <map field="DXGI_ADAPTER_DESC[123]?::AdapterLuid" name="Luid" />
+    <map field="DXGI_ADAPTER_DESC[123]?::SubSysId" name="SubsystemId" />
     <map field="DXGI_ADAPTER_DESC[12]::Flags" type="DXGI_ADAPTER_FLAG" />
 
     <map field="DXGI_GAMMA_CONTROL_CAPABILITIES::MaxConvertedValue" name="MaximumConvertedValue" />
@@ -154,6 +160,13 @@
     
     <map struct="DXGI_ADAPTER_DESC" pack="4"/>
     <map struct="DXGI_ADAPTER_DESC1" pack="4"/>
+    <map struct="DXGI_ADAPTER_DESC2" pack="4"/>
+    <map struct="DXGI_ADAPTER_DESC3" pack="4"/>
+
+    <map struct="DXGI_INFO_QUEUE_FILTER" name="InfoQueueFilter" />
+    <map struct="DXGI_INFO_QUEUE_FILTER_DESC" name="InfoQueueFilterDescription" />
+
+    <map struct="DXGI_DEBUG_ID" name="DebugId" />
 
     <!--
     // *****************************************************************
@@ -163,6 +176,8 @@
     <map interface="IDXGI(.+)" name-tmp="$1" />
     <map interface="IDXGIObject" name="DXGIObject" />
     <map interface="IDXGIDeviceSubObject" name="DeviceChild" />
+    <map interface="IDXGIDebug" name="DXGIDebug" />
+    <map interface="IDXGIDebug1" name="DXGIDebug1" />
 
     <map method=".*::GetPrivateData" check="false"/>
 
@@ -174,13 +189,13 @@
     <map method="IDXGIDevice::QueryResourceResidency" visibility="internal" />
 
     <map method="IDXGIFactory::CreateSwapChain" visibility="internal" />
-    <map param="ppSwapChain" attribute="out fast"/>
+    <map param="IDXGIFactory::CreateSwapChain::ppSwapChain" attribute="out fast"/>
 
     <map param="IDXGIFactory::CreateSoftwareAdapter::ppAdapter" return="true" />
     <map method="IDXGIFactory::EnumAdapters" name="GetAdapter" visibility="internal" check="false"/>
     <map method="IDXGIFactory1::EnumAdapters1" name="GetAdapter1" visibility="internal" check="false"/>
     <map method="IDXGIFactory::GetWindowAssociation" property="false" />
-    <map param="pWindowHandle" return="true" />
+    <map param="IDXGIFactory::GetWindowAssociation::pWindowHandle" return="true" />
     <map param="IDXGIFactory::MakeWindowAssociation::Flags" type="DXGI_MWA_FLAGS" />
 
     <map method="IDXGIFactory2::Create.*" visibility="internal" />
@@ -202,6 +217,7 @@
     <map method="IDXGISwapChain::GetBuffer" visibility="internal" />
     <map param="IDXGISwapChain::Present::Flags" type="DXGI_PRESENT_FLAGS" />
     <map param="IDXGISwapChain::ResizeBuffers::SwapChainFlags" type="DXGI_SWAP_CHAIN_FLAG" />
+
 
     <map param="IDXGISwapChain3::CheckColorSpaceSupport::pColorSpaceSupport" type="DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG" />
     <map param="IDXGISwapChain3::CheckColorSpaceSupport::pColorSpaceSupport" return="true" />
@@ -237,6 +253,8 @@
     <map param="IDXGIOutput4::CheckOverlayColorSpaceSupport::pFlags" return="true"/>
     <map param="IDXGIOutput3::CheckOverlaySupport::pFlags" return="true"/>
 
+    <map method="IDXGIOutputDuplication::AcquireNextFrame" hresult="true" check="false" visibility="public" name="TryAcquireNextFrame" />
+
     <map param="ISurfaceImageSourceNative::BeginDraw::surface" return="true"/>
 
     <map interface="IVirtualSurfaceUpdatesCallbackNative" visibility="internal" callback="true" callback-dual="true" />
@@ -247,7 +265,9 @@
     <map param="IVirtualSurfaceImageSourceNative::GetUpdateRectCount::count" return="true"/>
     <map method="IVirtualSurfaceImageSourceNative::GetUpdateRects" visibility="internal"/>
 
-    <map method="IDXGISwapChain::Present" hresult="true"/>
+    <map method="IDXGISwapChain::GetFrameStatistics" hresult="true" check="false" visibility="public" name="TryGetFrameStatistics"/>
+    
+    <map method="IDXGISwapChain::Present" hresult="true" check="false" visibility="public" name="TryPresent"/>
     <map method="IDXGISwapChain1::Present1" visibility="internal" hresult="true"/>
     <map param="IDXGISwapChain1::Present1::pPresentParameters" type="void"/>
     <map param="IDXGISwapChain1::Present1::PresentFlags" type="DXGI_PRESENT_FLAGS" />
@@ -276,7 +296,9 @@
 
     <!-- TODO: No documentation - don't know how to map it. -->
     <remove function="DXGIGetDebugInterface1" />
-
+    <remove function="DXGIGetDebugInterface" />
+    <remove function="DXGIDeclareAdapterRemovalSupport" />
+    
     <context-clear/>
   </mapping>
 </config>

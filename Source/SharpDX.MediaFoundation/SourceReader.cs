@@ -62,7 +62,7 @@ namespace SharpDX.MediaFoundation
         public SourceReader(byte[] buffer, MediaAttributes attributes = null)
         {
             byteStream = new ByteStream(new MemoryStream(buffer));
-            MediaFactory.CreateSourceReaderFromByteStream(byteStream.NativePointer, attributes, this);
+            MediaFactory.CreateSourceReaderFromByteStream(byteStream, attributes, this);
         }
 
         /// <summary>	
@@ -82,7 +82,7 @@ namespace SharpDX.MediaFoundation
 
             int capabilities = byteStream.Capabilities;
 
-            MediaFactory.CreateSourceReaderFromByteStream(byteStream.NativePointer, attributes, this);
+            MediaFactory.CreateSourceReaderFromByteStream(byteStream, attributes, this);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace SharpDX.MediaFoundation
         public SourceReader(IRandomAccessStream buffer, MediaAttributes attributes = null)
         {
             byteStream = new ByteStream(buffer);
-            MediaFactory.CreateSourceReaderFromByteStream(byteStream.NativePointer, attributes, this);
+            MediaFactory.CreateSourceReaderFromByteStream(byteStream, attributes, this);
         }
 #endif
 
@@ -134,7 +134,7 @@ namespace SharpDX.MediaFoundation
         public SourceReader(SharpDX.Win32.ComStream comStream, MediaAttributes attributes = null)
         {
             byteStream = new ByteStream(comStream);
-            MediaFactory.CreateSourceReaderFromByteStream(byteStream.NativePointer, attributes, this);
+            MediaFactory.CreateSourceReaderFromByteStream(byteStream, attributes, this);
         }
 #endif
 
@@ -264,7 +264,7 @@ namespace SharpDX.MediaFoundation
         /// <remarks>	
         /// <p>The <strong>Flush</strong> method discards all queued samples and cancels all pending sample requests.</p><p>This method can complete either synchronously or asynchronously. If you provide a callback reference when you create the source reader, the method is asynchronous. Otherwise, the method is synchronous. For more information about the setting the callback reference, see <see cref="SharpDX.MediaFoundation.SourceReaderAttributeKeys.AsyncCallback"/>.</p><p>In synchronous mode, the method blocks until the operation is complete.</p><p>In asynchronous mode, the application's <strong><see cref="SharpDX.MediaFoundation.SourceReaderCallback.OnFlush"/></strong> method is called when the flush operation completes. While a flush operation is pending, the <strong><see cref="SharpDX.MediaFoundation.SourceReader.ReadSample"/></strong> method returns <strong>MF_E_NOTACCEPTING</strong>.</p><p><strong>Note</strong>??In Windows?7, there was a bug in the implementation of this method, which causes <strong>OnFlush</strong> to be called before the flush operation completes. A hotfix is available that fixes this bug. For more information, see http://support.microsoft.com/kb/979567.</p><p>This interface is available on Windows?Vista if Platform Update Supplement for Windows?Vista is installed.</p>	
         /// </remarks>	
-        /// <include file='.\..\Documentation\CodeComments.xml' path="/comments/comment[@id='IMFSourceReader::Flush']/*"/>	
+        /// <include file='Documentation\CodeComments.xml' path="/comments/comment[@id='IMFSourceReader::Flush']/*"/>	
         /// <msdn-id>dd374659</msdn-id>	
         /// <unmanaged>HRESULT IMFSourceReader::Flush([In] unsigned int dwStreamIndex)</unmanaged>	
         /// <unmanaged-short>IMFSourceReader::Flush</unmanaged-short>	

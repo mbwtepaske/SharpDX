@@ -25,7 +25,7 @@
   
   <namespace>SharpDX.RawInput</namespace>
   <assembly>SharpDX.RawInput</assembly>
-
+  
   <include file="winuser.h">
     <attach>RAWINPUTHEADER</attach>
     <!--<attach>RAWMOUSE</attach>-->
@@ -38,6 +38,7 @@
     <attach>RID_DEVICE_INFO_KEYBOARD</attach>
     <attach>RID_DEVICE_INFO_HID</attach>
     <attach>RID_DEVICE_INFO</attach>
+    <attach>RID_DEVICE_INFO_INNER_0</attach>
     <attach>RAWINPUT_INNER_0</attach>
 
     <attach>GetRawInputData</attach>
@@ -153,7 +154,6 @@
     <map struct="RAWINPUT(.*)" name-tmp="RAW_INPUT_$1" visibility="internal"/>
 
     <map struct="RAWINPUT_INNER_0" marshalto="true"/>
-    <map struct="RAWHID" marshalto="true" marshal="true"/>
 
     <map field=".*::[a-z]+([A-Z].*)" name="$1"/>
 

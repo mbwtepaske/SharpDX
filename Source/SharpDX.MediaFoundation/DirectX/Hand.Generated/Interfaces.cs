@@ -31,6 +31,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Security;
+#if DESKTOP_APP
 namespace SharpDX.MediaFoundation.DirectX {
 
 // Disable warning : XML comment is not placed on a valid language element
@@ -215,7 +216,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                 SharpDX.Result __result__;
                 fixed (void* serviceOut_ = &serviceOut)
                     __result__= 
-    				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)hDevice, &riid, serviceOut_,((void**)(*(void**)_nativePointer))[9]);		
+    				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)hDevice, (void*)&riid, serviceOut_,((void**)(*(void**)_nativePointer))[9]);		
                 __result__.CheckError();
             }
         }
@@ -395,7 +396,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                 SharpDX.Result __result__;
                 fixed (void* ratesRef_ = ratesRef)
                     __result__= 
-    				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, &vPGuidRef, count, ratesRef_,((void**)(*(void**)_nativePointer))[8]);		
+    				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)&vPGuidRef, count, ratesRef_,((void**)(*(void**)_nativePointer))[8]);		
                 __result__.CheckError();
             }
         }
@@ -740,7 +741,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                         fixed (void* configRef_ = &configRef)
                             fixed (void* numSurfacesRef_ = &numSurfacesRef)
                                 __result__= 
-                				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, deviceGuidRef_, videoDescRef_, configRef_, decoderRenderTargetsRef_, numSurfacesRef_,((void**)(*(void**)_nativePointer))[4]);		
+                				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, deviceGuidRef_, videoDescRef_, configRef_, (void*)decoderRenderTargetsRef_, numSurfacesRef_,((void**)(*(void**)_nativePointer))[4]);		
                 for (int i = 0; i < decoderRenderTargetsRef.Length; i++)
                     decoderRenderTargetsRef[i] = (decoderRenderTargetsRef_[i] == IntPtr.Zero)?null:new SharpDX.Direct3D9.Surface(decoderRenderTargetsRef_[i]);	
                 __result__.CheckError();
@@ -949,7 +950,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                     fixed (void* countRef_ = &countRef)
                         fixed (void* configsOut_ = configsOut__)
                             __result__= 
-            				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, &guid, videoDescRef_, (void*)reservedRef, countRef_, configsOut_,((void**)(*(void**)_nativePointer))[6]);		
+            				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)&guid, videoDescRef_, (void*)reservedRef, countRef_, configsOut_,((void**)(*(void**)_nativePointer))[6]);		
                 __result__.CheckError();
             }
         }
@@ -1394,7 +1395,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                     fixed (void* countRef_ = &countRef)
                         fixed (void* formatsRef_ = formatsRef__)
                             __result__= 
-            				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, &videoProcDeviceGuid, videoDescRef_, countRef_, formatsRef_,((void**)(*(void**)_nativePointer))[6]);		
+            				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)&videoProcDeviceGuid, videoDescRef_, countRef_, formatsRef_,((void**)(*(void**)_nativePointer))[6]);		
                 __result__.CheckError();
             }
         }
@@ -1420,7 +1421,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                     fixed (void* countRef_ = &countRef)
                         fixed (void* formatsRef_ = formatsRef__)
                             __result__= 
-            				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, &videoProcDeviceGuid, videoDescRef_, unchecked((int)renderTargetFormat), countRef_, formatsRef_,((void**)(*(void**)_nativePointer))[7]);		
+            				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)&videoProcDeviceGuid, videoDescRef_, unchecked((int)renderTargetFormat), countRef_, formatsRef_,((void**)(*(void**)_nativePointer))[7]);		
                 __result__.CheckError();
             }
         }
@@ -1444,7 +1445,7 @@ namespace SharpDX.MediaFoundation.DirectX {
                 fixed (void* videoDescRef_ = &videoDescRef)
                     fixed (void* capsRef_ = &capsRef)
                         __result__= 
-        				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, &videoProcDeviceGuid, videoDescRef_, unchecked((int)renderTargetFormat), capsRef_,((void**)(*(void**)_nativePointer))[8]);		
+        				SharpDX.MediaFoundation.LocalInterop.Calliint(_nativePointer, (void*)&videoProcDeviceGuid, videoDescRef_, unchecked((int)renderTargetFormat), capsRef_,((void**)(*(void**)_nativePointer))[8]);		
                 __result__.CheckError();
             }
         }
@@ -1525,3 +1526,4 @@ namespace SharpDX.MediaFoundation.DirectX {
         }
     }
 }
+#endif

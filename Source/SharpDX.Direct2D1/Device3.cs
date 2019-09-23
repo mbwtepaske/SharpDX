@@ -33,7 +33,7 @@ namespace SharpDX.Direct2D1
         /// Each call to CreateDevice returns a unique <see cref="SharpDX.Direct2D1.Device3"/> object.The <see cref="SharpDX.DXGI.Device"/> object is obtained by calling QueryInterface on an ID3D10Device or an ID3D11Device.	
         /// </remarks>	
         /// <unmanaged>HRESULT ID2D1Factory3::CreateDevice([In] IDXGIDevice* dxgiDevice,[Out] ID2D1Device2** d2dDevice2)</unmanaged>	
-        public Device3(Factory4 factory, SharpDX.DXGI.Device3 device)
+        public Device3(Factory4 factory, SharpDX.DXGI.Device device)
             : base(IntPtr.Zero)
         {
             factory.CreateDevice(device, this);

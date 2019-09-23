@@ -96,6 +96,14 @@
     <map enum-item="D3D12_MESSAGE_ID_MAP_INVALID_SUBRESOURCE" name="MapInvalidSubResource2"/>
     <map enum-item="D3D12_MESSAGE_ID_UNMAP_INVALID_SUBRESOURCE" name="UnmapInvalidSubResource2"/>
 
+    <map enum-item="D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_DENORMFLUSH" name="ClearRenderTargetViewDenormFlush"/>
+    <map enum-item="D3D12_MESSAGE_ID_CLEARDEPTHSTENCILVIEW_DENORMFLUSH" name="ClearDepthStencilViewDenormFlush"/>
+    <map enum-item="D3D12_MESSAGE_ID_CLEARUNORDEREDACCESSVIEW_DENORMFLUSH" name="ClearUnorderedAccessViewDenormFlush"/>
+    <map enum-item="D3D12_MESSAGE_ID_CLEARDEPTHSTENCILVIEW_INVALID" name="ClearDepthStencilViewInvalid"/>
+    <map enum-item="D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE" name="ClearRenderTargetViewMismatchingClearValue"/>
+    <map enum-item="D3D12_MESSAGE_ID_CLEARDEPTHSTENCILVIEW_MISMATCHINGCLEARVALUE" name="ClearDepthStencilViewMismatchingClearValue"/>
+
+    <map enum-item="D3D12_VIEW_INSTANCING_TIER(.*)" name-tmp="Tier$1"/>
     <map enum-item="D3D12_CONSERVATIVE_RASTERIZATION_TIER(.*)" name-tmp="Tier$1"/>
     <map enum-item="D3D12_CROSS_NODE_SHARING_TIER(.*)" name-tmp="Tier$1"/>
     <map enum-item="D3D12_RESOURCE_HEAP_TIER(.*)" name-tmp="Tier$1"/>
@@ -106,11 +114,26 @@
     <map enum-item="D3D_ROOT_SIGNATURE_VERSION(.*)" name-tmp="Version$1"/>
     <map enum-item="D3D12_SHADER_MIN_PRECISION_SUPPORT_(\d*)_BIT" name-tmp="Bit$1"/>
     <map enum-item="D3D12_DSV_FLAG(.*)" name-tmp="$1"/>
+    <map enum-item="D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER_(.*)" name-tmp="Tier$1"/>
     
     <map enum="D3D12_FORMAT_SUPPORT1" flags="true"/>
     <map enum="D3D12_FORMAT_SUPPORT2" flags="true"/>
     <map enum="D3D12_RESOURCE_STATES" flags="true"/>
-    
+
+    <map enum="D3D_SHADER_MODEL" name="ShaderModel"/>
+    <map enum-item="D3D_SHADER_MODEL_5_1" name="Model51"/>
+    <map enum-item="D3D_SHADER_MODEL_6_0" name="Model60"/>
+    <map enum-item="D3D_SHADER_MODEL_6_1" name="Model61"/>
+    <map enum-item="D3D_SHADER_MODEL_6_2" name="Model62"/>
+    <map enum-item="D3D_SHADER_MODEL_6_3" name="Model63"/>
+    <map enum-item="D3D_SHADER_MODEL_6_4" name="Model64"/>
+    <map enum="D3D12_RLDO_FLAGS" name="ReportingLevel" />
+    <map enum-item="D3D12_HEAP_SERIALIZATION_TIER_(.*)" name="Tier$1"/>
+    <map enum-item="D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER_(.*)" name="Tier$1"/>
+    <map enum-item="D3D12_RENDER_PASS_TIER_(.*)" name="Tier$1"/>
+    <map enum-item="D3D12_DRED_VERSION_1_0" name="Version10"/>
+    <map enum-item="D3D12_RAYTRACING_TIER_(.*)" name="Tier$1"/>
+
     <!--
     // *****************************************************************
     // D3D12 Struct
@@ -121,19 +144,23 @@
 
     <map field="D3D12_MESSAGE::pDescription" name="Description" visibility="public"/>
     
+    <map struct="D3D12_INFO_QUEUE_FILTER" name="InfoQueueFilter" />
+    <map struct="D3D12_INFO_QUEUE_FILTER_DESC" name="InfoQueueFilterDescription" />
     <map struct="D3D12_.*_PIPELINE_STATE_DESC" struct-to-class="true" marshalto="true"/>
     <map struct="D3D12_COMMAND_SIGNATURE_DESC" struct-to-class="true" marshalto="true"/>
     <map field="D3D12_COMMAND_SIGNATURE_DESC::NumArgumentDescs" visibility="internal"/>
     <map field="D3D12_COMMAND_SIGNATURE_DESC::pArgumentDescs" visibility="internal"/>
 
-    <map field="D3D12_.*_PIPELINE_STATE_DESC::p([A-Z].*)" name="$1Pointer" visibility="private"/>
     <map field="D3D12_GRAPHICS_PIPELINE_STATE_DESC::RTVFormats" name="RenderTargetFormats"/>
     <map field="D3D12_GRAPHICS_PIPELINE_STATE_DESC::DSVFormat" name="DepthStencilFormat"/>
+    <map field="D3D12_GRAPHICS_PIPELINE_STATE_DESC::pRootSignature" name="RootSignature"/>
 
-    <map field="D3D12_RESOURCE_TRANSITION_BARRIER::pResource" name="ResourcePointer" visibility="private"/>
-    <map field="D3D12_RESOURCE_ALIASING_BARRIER::pResourceBefore" name="ResourceBeforePointer" visibility="private"/>
-    <map field="D3D12_RESOURCE_ALIASING_BARRIER::pResourceAfter" name="ResourceAfterPointer" visibility="private"/>
-
+    <map field="D3D12_RESOURCE_TRANSITION_BARRIER::pResource" name="ResourcePointer" type="void" visibility="private"/>
+    <map field="D3D12_RESOURCE_ALIASING_BARRIER::pResourceBefore" name="ResourceBeforePointer" type="void" visibility="private"/>
+    <map field="D3D12_RESOURCE_ALIASING_BARRIER::pResourceAfter" name="ResourceAfterPointer" type="void" visibility="private"/>
+    <map field="D3D12_RESOURCE_TRANSITION_BARRIER::pResource" name="ResourcePointer" type="void" visibility="private"/>
+    <map field="D3D12_RESOURCE_UAV_BARRIER::pResource" name="ResourcePointer" type="void" />
+    
     <map field="D3D12_RESOURCE_DESC::CPUAccessFlags" name="CpuAccessFlags" />
     <map field="D3D12_RESOURCE_DESC::MiscFlags" name="OptionFlags"/>
 
@@ -148,6 +175,12 @@
 
     <map struct="D3D12_ROOT_SIGNATURE_DESC" struct-to-class="true" marshal="true"/>
     <remove field="D3D12_ROOT_SIGNATURE_DESC::.*"/>
+
+    <map struct="D3D12_ROOT_SIGNATURE_DESC1" struct-to-class="true" marshal="true"/>
+    <remove field="D3D12_ROOT_SIGNATURE_DESC1::.*"/>
+
+    <map struct="D3D12_VERSIONED_ROOT_SIGNATURE_DESC" struct-to-class="true" marshal="true"/>
+    <remove field="D3D12_VERSIONED_ROOT_SIGNATURE_DESC::.*"/>
       
     <map struct="D3D12_INPUT_LAYOUT_DESC" struct-to-class="true" marshalto="true"/>
     <map field="D3D12_INPUT_LAYOUT_DESC::pInputElementDescs" name="InputElementsPointer" visibility="private"/>
@@ -167,7 +200,7 @@
 
     <map struct="D3D12_COMMAND_SIGNATURE" name="CommandSignatureDescription"/>
     
-    <map field="D3D12_CLEAR_VALUE::Color" type="SHARPDX_VECTOR4" array="" />
+    <map field="D3D12_CLEAR_VALUE::Color" type="SHARPDX_VECTOR4" array="" override-native-type="true" />
     
     <!-- Inner argument description structs have no name, so we specify it manually -->
     <map struct="D3D12_INDIRECT_ARGUMENT_DESC_INNER_0_INNER_0" name="VertexBufferArgument"/>
@@ -182,11 +215,20 @@
     <remove field="D3D12_RESOURCE_BARRIER::.*"/>
     <remove field="D3D12_ROOT_PARAMETER::.*"/>
     <remove field="D3D12_TEXTURE_COPY_LOCATION::.*" />
+
+    <!--Remove all fields for D3D12_ROOT_PARAMETER1 as the union with pointers cannot be mapped safely in x86/x64 with C# explicit layout-->
+    <remove field="D3D12_ROOT_PARAMETER1::.*" />
     
     <map struct="D3D12_CACHED_PIPELINE_STATE::pCachedBlob" name="CachedBlobPointer"/>
 
     <map interface="ID3D12Debug" name="DebugInterface"/>
     <remove struct="D3D12_MEMCPY_DEST"/>
+    
+    <!--Remove all fields for D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS as the union with pointers cannot be mapped safely in x86/x64 with C# explicit layout-->
+    <map struct="D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS" struct-to-class="true" marshal="true"/>
+    <remove field="D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS::.*" />
+
+    <map field="D3D12_NODE_MASK::NodeMask" name="Mask" />
 
     <!--
     // *****************************************************************
@@ -209,10 +251,10 @@
     <map method="ID3D12GraphicsCommandList::OM(.*)" name="$1"/>
     <map method="ID3D12GraphicsCommandList::RS(.*)" name="$1"/>
     <map method="ID3D12GraphicsCommandList::OMSetStencilRef" name="SetStencilReference"/>
-    <map param="ID3D12GraphicsCommandList::OMSetBlendFactor::BlendFactor" type="SHARPDX_VECTOR4"/>
-    <map param="ID3D12GraphicsCommandList::ClearRenderTargetView::ColorRGBA" type="SHARPDX_COLOR4"/>
-    <map param="ID3D12GraphicsCommandList::ClearUnorderedAccessViewUint::Values" type="SHARPDX_INT4"/>
-    <map param="ID3D12GraphicsCommandList::ClearUnorderedAccessViewFloat::Values" type="SHARPDX_VECTOR4"/>
+    <map param="ID3D12GraphicsCommandList::OMSetBlendFactor::BlendFactor" type="SHARPDX_VECTOR4" override-native-type="true" attribute="in" />
+    <map param="ID3D12GraphicsCommandList::ClearRenderTargetView::ColorRGBA" type="SHARPDX_COLOR4" override-native-type="true"/>
+    <map param="ID3D12GraphicsCommandList::ClearUnorderedAccessViewUint::Values" type="SHARPDX_INT4" override-native-type="true"/>
+    <map param="ID3D12GraphicsCommandList::ClearUnorderedAccessViewFloat::Values" type="SHARPDX_VECTOR4" override-native-type="true"/>
     <map param="ID3D12GraphicsCommandList::ResourceBarrier::pBarriers" type="void"/>
     <map method="ID3D12GraphicsCommandList::ResourceBarrier" visibility="private"/>
 
@@ -224,7 +266,10 @@
     <map method="ID3D12GraphicsCommandList::IASetIndexBuffer" property="false"/>
 
     <map method="ID3D12Device::RegisterBudgetChangeCallback" visibility="internal"/>
-
+    <map method="ID3D12GraphicsCommandList::BeginEvent" visibility="internal" />
+    
+    <map method="ID3D12GraphicsCommandList1::OMSetDepthBounds" name="SetDepthsBounds" />
+    
     <!--Revert changes inherited from D3D11. Leave all Device.CreateXXX method as-is-->
     <map method="ID3D12Device::CreateCommandAllocator" visibility="public"/>
     <map param="ID3D12Device::CreateCommandAllocator::ppCommandAllocator" attribute="out" return="true"/>
@@ -307,6 +352,23 @@
         
     <map method="ID3D12Device::CheckFeatureSupport" check="false" visibility="private"/>
     
+    <map method="ID3D12Device2::CreatePipelineState" visibility="private"/>
+    <map param="ID3D12Device2::CreatePipelineState::ppPipelineState" attribute="out" type="ID3D12PipelineState" return="true"/>
+
+    <!-- ID3D12Device4 -->
+    <map method="ID3D12Device4::CreateCommandList1" visibility="private"/>
+    <map param="ID3D12Device4::CreateCommandList1::ppCommandList" attribute="out" return="true"/>
+
+    <map method="ID3D12Device4::CreateProtectedResourceSession" visibility="private"/>
+    <map param="ID3D12Device4::CreateProtectedResourceSession::ppSession" attribute="out" type="ID3D12ProtectedResourceSession" return="true"/>
+
+    <map method="ID3D12Device4::CreateHeap1" visibility="private"/>
+    <map param="ID3D12Device4::CreateHeap1::ppvHeap" attribute="out" type="ID3D12Heap1" return="true"/>
+
+    <map method="ID3D12Device5::CreateStateObject" visibility="private"/>
+    <map param="ID3D12Device5::CreateStateObject::ppStateObject" attribute="out" type="ID3D12StateObject" return="true"/>
+    <map param="ID3D12Device5::GetRaytracingAccelerationStructurePrebuildInfo::pInfo" attribute="out" return="true"/>
+
     <!--
     // *****************************************************************
     // D3D12 Functions
@@ -315,6 +377,10 @@
    
     <remove function=".*_Stub"/>
     <remove function=".*_Proxy"/>
+    <remove function="D3D12SerializeVersionedRootSignature"/>
+    <remove method="ID3D12Device1::CreatePipelineLibrary"/>
+    <remove interface="ID3D12VersionedRootSignatureDeserializer"/>
+    
     <map method="ID3D12RootSignatureDeserializer::GetRootSignatureDesc" type="void" property="false" visibility="private"/>
     <map function="D3D12(.+)" name-tmp="$1" />
     <map function="D3D12.*" dll='"d3d12.dll"' group="SharpDX.Direct3D12.D3D12" />

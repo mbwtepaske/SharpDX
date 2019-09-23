@@ -363,40 +363,35 @@ namespace SharpDX.D3DCompiler
                 if (!(profile.ToUpperInvariant().StartsWith("FX_") || profile.ToUpperInvariant().StartsWith("LIB_")) && string.IsNullOrWhiteSpace(entryPoint))
                     throw new ArgumentNullException("entryPoint");
 
-                var resultCode = Result.Ok;
-
                 Blob blobForCode = null;
                 Blob blobForErrors = null;
 
-                try
-                {
-                    D3D.Compile2(
-                        (IntPtr)textSource,
-                        textSize,
-                        sourceFileName,
-                        PrepareMacros(defines),
-                        IncludeShadow.ToIntPtr(include),
-                        entryPoint,
-                        profile,
-                        shaderFlags,
-                        effectFlags,
-                        secondaryDataFlags,
-                        secondaryData != null ? secondaryData.DataPointer : IntPtr.Zero,
-                        secondaryData != null ? (int)secondaryData.Length : 0,
-                        out blobForCode,
-                        out blobForErrors);
-                }
-                catch (SharpDXException ex)
+                var resultCode = D3D.Compile2(
+                    (IntPtr)textSource,
+                    textSize,
+                    sourceFileName,
+                    PrepareMacros(defines),
+                    include,
+                    entryPoint,
+                    profile,
+                    shaderFlags,
+                    effectFlags,
+                    secondaryDataFlags,
+                    secondaryData != null ? secondaryData.DataPointer : IntPtr.Zero,
+                    secondaryData != null ? (int)secondaryData.Length : 0,
+                    out blobForCode,
+                    out blobForErrors);
+
+                if (resultCode.Failure)
                 {
                     if (blobForErrors != null)
                     {
-                        resultCode = ex.ResultCode;
                         if (Configuration.ThrowOnShaderCompileError)
-                            throw new CompilationException(ex.ResultCode, Utilities.BlobToString(blobForErrors));
+                            throw new CompilationException(resultCode, Utilities.BlobToString(blobForErrors));
                     }
                     else
                     {
-                        throw;
+                        throw new SharpDXException(resultCode);
                     }
                 }
 
@@ -475,7 +470,7 @@ namespace SharpDX.D3DCompiler
             ShaderMacro[] defines = null,
             Include include = null)
         {
-            return Compile(NativeFile.ReadAllText(fileName), entryPoint, profile, shaderFlags, effectFlags, defines, include);
+            return Compile(NativeFile.ReadAllText(fileName), entryPoint, profile, shaderFlags, effectFlags, defines, include, fileName);
         }
 
         // Win 8.1 SDK removed the corresponding functions from the WinRT platform
@@ -800,7 +795,7 @@ namespace SharpDX.D3DCompiler
 
                 try
                 {
-                    D3D.Preprocess(shaderSourcePtr, shaderSourceLength, sourceFileName, PrepareMacros(defines), IncludeShadow.ToIntPtr(include),
+                    D3D.Preprocess(shaderSourcePtr, shaderSourceLength, sourceFileName, PrepareMacros(defines),include,
                                     out blobForText, out blobForErrors);
                 }
                 catch (SharpDXException ex)
@@ -957,6 +952,10 @@ namespace SharpDX.D3DCompiler
             return macroArray;
         }
 
+        /// <summary>
+        /// Disposes all resource for the allocated object
+        /// </summary>
+        /// <remarks>This is kept for backwards compatibility only, this actually does nothing in that case</remarks>
         public void Dispose()
         {
             // Just to keep backward compatibility
@@ -965,9 +964,7 @@ namespace SharpDX.D3DCompiler
         /// <summary>
         /// Gets the shader type and version string from the provided bytecode.
         /// </summary>
-        /// <param name="shaderBytecode">The shader bytecode data.</param>
         /// <returns>The type and version string of the provided shader bytecode.</returns>
-        /// <exception cref="ArgumentNullException">Is thrown when <paramref name="shaderBytecode"/> is null.</exception>
         /// <exception cref="ArgumentException">Is thrown when bytecode contains invalid data or the version could not be read.</exception>
         /// <exception cref="IndexOutOfRangeException">Is thrown when bytecode contains invalid data.</exception>
         public ShaderProfile GetVersion()

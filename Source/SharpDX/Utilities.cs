@@ -32,7 +32,6 @@ using System.Threading;
 
 using SharpDX.Direct3D;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Linq;
 using System.Linq.Expressions;
 using SharpDX.Text;
@@ -418,7 +417,11 @@ namespace SharpDX
         public static bool IsAssignableToGenericType(Type givenType, Type genericType)
         {
             // from http://stackoverflow.com/a/1075059/1356325
+#if BEFORE_NET45
+            var interfaceTypes = givenType.GetTypeInfo().GetInterfaces();
+#else
             var interfaceTypes = givenType.GetTypeInfo().ImplementedInterfaces;
+#endif
 
             foreach (var it in interfaceTypes)
             {
@@ -502,7 +505,11 @@ namespace SharpDX
         /// <returns>The converted string.</returns>
         public static string PtrToStringAnsi(IntPtr pointer, int maxLength)
         {
-            return Marshal.PtrToStringAnsi(pointer, maxLength);
+            string managedString = Marshal.PtrToStringAnsi(pointer); // copy null-terminating unmanaged text from pointer to a managed string
+            if (managedString != null && managedString.Length > maxLength)
+                managedString = managedString.Substring(0, maxLength);
+
+            return managedString;
         }
 
         /// <summary>
@@ -513,10 +520,14 @@ namespace SharpDX
         /// <returns>The converted string.</returns>
         public static string PtrToStringUni(IntPtr pointer, int maxLength)
         {
-            return Marshal.PtrToStringUni(pointer, maxLength);
+            string managedString = Marshal.PtrToStringUni(pointer); // copy null-terminating unmanaged text from pointer to a managed string
+            if (managedString != null && managedString.Length > maxLength)
+                managedString = managedString.Substring(0, maxLength);
+
+            return managedString;
         }
 
-    /// <summary>
+        /// <summary>
         /// Copies the contents of a managed String into unmanaged memory, converting into ANSI format as it copies.
         /// </summary>
         /// <param name="s">A managed string to be copied.</param> 
@@ -872,7 +883,17 @@ namespace SharpDX
         }
 
         private static MethodInfo GetMethod(Type type, string name, Type[] typeArgs) {
-            foreach( var method in type.GetTypeInfo().GetDeclaredMethods(name)) {
+#if BEFORE_NET45
+            foreach( var method in type.GetTypeInfo().GetMethods(BindingFlags.Public|BindingFlags.Instance))
+            {
+                if(method.Name != name)
+                {
+                    continue;
+                }
+#else
+            foreach( var method in type.GetTypeInfo().GetDeclaredMethods(name))
+            {
+#endif
                 if ( method.GetParameters().Length == typeArgs.Length) {
                     var parameters = method.GetParameters();
                     bool methodFound = true;
@@ -962,14 +983,22 @@ namespace SharpDX
             var tempType = sourceType;
             while (tempType != null)
             {
+#if BEFORE_NET45
+                methods.AddRange(tempType.GetTypeInfo().GetMethods(BindingFlags.Public)); //target methods will be favored in the search
+#else
                 methods.AddRange(tempType.GetTypeInfo().DeclaredMethods); //target methods will be favored in the search
+#endif
                 tempType = tempType.GetTypeInfo().BaseType;
             }
 
             tempType = targetType;
             while (tempType != null)
             {
+#if BEFORE_NET45
+                methods.AddRange(tempType.GetTypeInfo().GetMethods(BindingFlags.Public)); //target methods will be favored in the search
+#else
                 methods.AddRange(tempType.GetTypeInfo().DeclaredMethods); //target methods will be favored in the search
+#endif
                 tempType = tempType.GetTypeInfo().BaseType;
             }
 
@@ -1010,7 +1039,7 @@ namespace SharpDX
             ClsctxAll = ClsctxServer | ClsctxInprocHandler
         }
 
-#if STORE_APP
+#if WINDOWS_UWP
         [StructLayout(LayoutKind.Sequential)]
         public struct MultiQueryInterface
         {
@@ -1102,7 +1131,7 @@ namespace SharpDX
             SpeedOverMemory = 0x8
         }
 
-#if WINDOWS_API_SET
+#if WINDOWS_UWP
         [DllImport("api-ms-win-core-handle-l1-1-0.dll", EntryPoint = "CloseHandle", SetLastError = true)]
         internal static extern bool CloseHandle(IntPtr handle);
 #else
@@ -1125,7 +1154,7 @@ namespace SharpDX
             return result;
         }
 
-#if WINDOWS_API_SET
+#if WINDOWS_UWP
         [DllImport("api-ms-win-core-libraryloader-l1-1-1.dll", EntryPoint = "GetProcAddress", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         static extern IntPtr GetProcAddress_(IntPtr hModule, string procName);
 #else

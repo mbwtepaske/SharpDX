@@ -58,16 +58,19 @@ namespace SharpDX.Direct3D11
                 {
                     var namePtr = Utilities.StringToHGlobalAnsi(value);
                     SetPrivateData(CommonGuid.DebugObjectName, value.Length, namePtr);
+                    Marshal.FreeHGlobal(namePtr);
                 }
             }
         }
 
+        /// <inheritdoc/>
         protected override void NativePointerUpdated(IntPtr oldNativePointer)
         {
             DisposeDevice();
             base.NativePointerUpdated(oldNativePointer);
         }
 
+        /// <inheritdoc/>
         protected override unsafe void Dispose(bool disposing)
         {
             if (disposing)
