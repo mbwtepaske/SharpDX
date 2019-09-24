@@ -2,13 +2,13 @@
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>$(DefineConstants);DIRECTX11_1;DIRECTX11_2;DirectX12</DefineConstants>
+    <DefineConstants>$(DefineConstants);DirectX12</DefineConstants>
 
     <PackageIconUrl>http://sharpdx.org/logo_100x100.png</PackageIconUrl>
     <PackageLicenseUrl>http://sharpdx.org/License.txt</PackageLicenseUrl>
     <PackageProjectUrl>http://sharpdx.org</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>SharpDX DirectX Direct3D Multimedia MDX 3D</PackageTags>
+    <PackageTags>SharpDX D3D12 Direct3D12 DXGI</PackageTags>
 
     <Authors>Alexandre Mutel</Authors>
     <Owners>Alexandre Mutel</Owners>
@@ -17,9 +17,9 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <PackageOutputPath>$(MSBuildThisFileDirectory)/../bin</PackageOutputPath>
     <AppType Condition="$(TargetFramework.StartsWith('netstandard'))">REFERENCE</AppType>
-    <SharpGenMacros>$(SharpGenMacros);$(AppType);DIRECTX11_1</SharpGenMacros>
+    <SharpGenMacros>$(SharpGenMacros);$(AppType)</SharpGenMacros>
     <DefineConstants>$(DefineConstants);$(AppType)</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net40'">$(DefineConstants);BEFORE_NET45</DefineConstants>
+
     <SharpGenGlobalNamespace>SharpDX</SharpGenGlobalNamespace>
     <SharpGenGenerateDoc>true</SharpGenGenerateDoc>
     <SharpGenIncludeAssemblyNameFolder>true</SharpGenIncludeAssemblyNameFolder>
@@ -36,21 +36,18 @@
 
     <!-- Enable sourcelink support -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <!--<TargetFrameworks>net45;netstandard1.1</TargetFrameworks>-->
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' And Exists('$(MSBuildThisFileDirectory)/../sharpdx.snk')">
-    <DefineConstants>$(DefineConstants);SHARPDX_SIGNED</DefineConstants>
-    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/../sharpdx.snk</AssemblyOriginatorKeyFile>
+    <DefineConstants>$(DefineConstants);SHARPDX_SIGNED</DefineConstants>
     <DelaySign>true</DelaySign>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="Nerdbank.GitVersioning" Version="2.3.38" PrivateAssets="All" />-->
     <PackageReference Include="SharpGenTools.Sdk" Version="1.2.0" PrivateAssets="All" />
-    <!--<PackageReference Include="SharpGen.Doc.Msdn.Tasks" Version="1.1.0" PrivateAssets="All" />-->
-    <!--<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>-->
     <SharpGenGlobalNamespaceOverrides Include="InterfaceArray" Override="ComArray" />
     <SharpGenGlobalNamespaceOverrides Include="MemoryHelpers"  Override="Utilities" />
     <SharpGenGlobalNamespaceOverrides Include="BooleanHelpers" Override="Utilities" />

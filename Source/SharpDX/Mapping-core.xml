@@ -136,14 +136,7 @@
     <bind from="RGBQUAD" to="System.Int32"/>
 
     <!-- unsupported type yet -->
-    <bind from="HALF_PTR" to="SharpDX.Win32.Unsupported.HALF_PTR"/>
-    <bind from="UHALF_PTR" to="SharpDX.Win32.Unsupported.UHALF_PTR"/>
-    
     <bind from="BITMAPINFOHEADER" to="SharpDX.Win32.BitmapInfoHeader"/>
-    <bind from="VIDEOINFOHEADER" to="SharpDX.Win32.Unsupported.VideoInfoHeader"/>
-    <bind from="AM_MEDIA_TYPE" to="SharpDX.Win32.Unsupported.AMMediaType"/>
-    <bind from="RPC_MESSAGE" to="SharpDX.Win32.Unsupported.RpcMessage"/>
-    <bind from="SAFEARRAY" to="SharpDX.Win32.Unsupported.SafeArray"/>
     <bind from="VARIANT" to="SharpDX.Win32.Variant"/>
     <bind from="PROPVARIANT" to="SharpDX.Win32.Variant"/>
 
@@ -156,11 +149,6 @@
     <!-- Win32 structures -->
     <bind from="DISPPARAMS" to="System.Runtime.InteropServices.ComTypes.DISPPARAMS"/>
     <bind from="EXCEPINFO" to="System.Runtime.InteropServices.ComTypes.EXCEPINFO"/>
-
-    <!-- Root IUnknown interface -->
-    <bind from="IDispatch" to="SharpDX.ComDispatch" />
-    <bind from="IPersist" to="SharpDX.ComPersistBase" />
-    <bind from="IPropertyBag" to="SharpDX.ComPropertyBag" />
 
     <!-- COM interfaces not directly used -->
     <bind from="ITypeInfo" to="SharpDX.ComObject" />

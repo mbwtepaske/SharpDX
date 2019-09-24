@@ -1,12 +1,12 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
+    <AssemblyTitle>SharpDX</AssemblyTitle>
+    <Description>Core assembly for all SharpDX assemblies.</Description>
+    <DocumentationFile Condition="'$(Configuration)' == 'Release'">bin\$(Configuration)\$(TargetFramework)\SharpDX.xml</DocumentationFile>
     <PackageId>SharpDX</PackageId>
     <Product>SharpDX</Product>
-    <DocumentationFile Condition="'$(Configuration)' == 'Release'">bin\$(Configuration)\$(TargetFramework)\SharpDX.xml</DocumentationFile>
-    <AssemblyTitle>SharpDX</AssemblyTitle>
     <Title>SharpDX</Title>
-    <Description>Core assembly for all SharpDX assemblies.</Description>
   </PropertyGroup>
 
   <ItemGroup>

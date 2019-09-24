@@ -23,19 +23,9 @@
 <config id="sharpdx-direct3d1x" xmlns="urn:SharpGen.Config">
   <depends>sharpdx</depends> 
 
-  <!--  This file is a common mapping file to D3D10, D3D10.1 and D3D11 APIs -->
-  
-  <!-- Includes are not attached to any namespace/assembly here -->
-  <!-- Attach is done in specific D3D10/D3D11 mapping file -->
-
-  <!-- D3D11 includes -->
+  <!-- D3D12 includes -->
   <include file="d3d12.h" />
-
   <include file="d3d12sdklayers.h" />
-
-  <naming />
-  <binding/>
-  <extensions />
 
   <mapping>
     <context>d3d12</context>
@@ -47,11 +37,7 @@
     // *****************************************************************
     -->
     <map enum="D3D(\d+)(.*)" name-tmp="$2" />    
-    <map enum="D3DX(\d+)(.*)" name-tmp="$2" />    
-    <map enum="D3D(\d+)_FORMAT_SUPPORT" flags="true" none="true" />
     <map enum="D3D(\d+)_COLOR_WRITE_ENABLE" flags="true" />
-    <remove enum="D3D\d+_RAISE_FLAG" />
-    <map enum-item="D3D(\d+)_ASYNC_GETDATA_DONOTFLUSH" name="DoNotFlush" />
     <map enum="D3D(\d+)_CREATE_DEVICE_FLAG" name="DeviceCreationFlags" />
     <map enum-item="D3D(\d+)_CREATE_DEVICE_(.*)" name-tmp="$2" />
     <map enum="D3D(\d+)_QUERY_MISC_FLAG" name="QueryFlags" />
@@ -198,7 +184,6 @@
     <map field="D3DX(\d+)_IMAGE_LOAD_INFO::MipFilter" type="D3DX$1_FILTER_FLAG" />
     <map field="D3DX(\d+)_TEXTURE_LOAD_INFO::Filter" type="D3DX$1_FILTER_FLAG" />
     <map field="D3DX(\d+)_TEXTURE_LOAD_INFO::MipFilter" type="D3DX$1_FILTER_FLAG" />
-    <map field="D3D11_DEPTH_STENCIL_VIEW_DESC::Flags" type="D3D11_DSV_FLAG" />
     <map field="D3D(\d+)_SHADER_DESC::Flags" type="D3DCOMPILE_SHADER_FLAGS" />
     <map field="D3D(\d+)_BUFFER_DESC::ByteWidth" name="SizeInBytes" />
     <map field="D3D(\d+)_BUFFER_DESC::MiscFlags" name="OptionFlags" />
@@ -214,7 +199,6 @@
     <map field="D3D(\d+)_QUERY_DESC::Query" name="Type" />
     <map field="D3D(\d+)_QUERY_DESC::MiscFlags" name="Flags" type="D3D$1_QUERY_MISC_FLAG" />
     <map field="D3D(\d+)_BUFFEREX_SRV::Flags" type="D3D$1_BUFFEREX_SRV_FLAG" />
-    <map field="D3D11_BUFFER_UAV::Flags" type="D3D11_BUFFER_UAV_FLAG" />
     <map field="D3D(\d+)_SHADER_VARIABLE_DESC::uFlags" name="Flags" type="D3D_SHADER_VARIABLE_FLAGS" />
     <map field="D3D(\d+)_SHADER_INPUT_BIND_DESC::uFlags" name="Flags" type="D3D_SHADER_INPUT_FLAGS" />
     <map field="D3D(\d+)_QUERY_DATA_PIPELINE_STATISTICS::(.*)s" name="$2Count" />
@@ -272,9 +256,6 @@
 
     <map interface="ID3D10Multithread" name="DeviceMultithread"/>
 
-    <!--<remove interface="ID3D10InfoQueue" />
-    <remove struct="D3D10_INFO_QUEUE_FILTER" />
-    <remove struct="D3D10_INFO_QUEUE_FILTER_DESC" />-->
     <map method="ID3D(\d+)InfoQueue::GetMessageW?" visibility="internal"/>
     <map param="ID3D(\d+)InfoQueue::GetMessageW?::pMessage" type="void" attribute="in"/>
     <map method="ID3D(\d+)InfoQueue::GetStorageFilter" visibility="internal"/>
@@ -291,9 +272,6 @@
     <map method="ID3D(\d+)Device::CheckCounterInfo" property="false" check="false" name="GetCounterCapabilities" />
     <map param="ID3D(\d+)Device::CheckCounterInfo::pCounterInfo" return="true" />
 
-    <map method="ID3D10Device::GetCreationFlags" type="D3D10_CREATE_DEVICE_FLAG"/>
-    <map method="ID3D11Device::GetCreationFlags" type="D3D11_CREATE_DEVICE_FLAG"/>
-    
     <map method="ID3D(\d+)Device::GetDeviceRemovedReason" check="false"/>
     
     <map method="ID3D(\d+)Device::CheckCounter" visibility="internal"/>
@@ -506,8 +484,6 @@
     <map param="ID3D(\d+).*::Map::MapFlags" type="D3D$1_MAP_FLAG" />
     <map method="ID3DX?(\d+)EffectPass::Apply" visibility="internal" />
     <map method="ID3DX(\d*)Font::GetTextMetrics.*" visibility="internal" />
-    <map interface="ID3D10Debug" name="DeviceDebug"/>
-    <map interface="ID3D11Debug" name="DeviceDebug"/>
 
     <!--
     // *****************************************************************

@@ -25,42 +25,33 @@
   <sdk name="StdLib" />
   <sdk name="WindowsSdk" version="10.0.17763.0" />
 
-  <include-dir override="true">$(THIS_CONFIG_PATH)\..\External\LegacyHeaders</include-dir>
-
-  <ifdef name="STORE_APP">
-    <include-prolog>
-      #define WINAPI_FAMILY WINAPI_FAMILY_APP
-    </include-prolog>    
-  </ifdef>
-  
-  
   <!-- Include prolog for GCC-XML -->
   <include-prolog>
     // Use unicode
     #define UNICODE
-    
+
     // for SAL annotations
     #define _PREFAST_
-    
+
     // To force GUID to be declared
     #define INITGUID
-    
+
     // Values for CERT_KEY_CLASSIFICATION_PROP_ID in wincrypt.h
     #define SORTPP_PASS
-    
+
     #define _ALLOW_KEYWORD_MACROS
-    
+
     // Wrap all declspec for code-gen
     #define __declspec(x) __attribute__((annotate(#x)))
-    
+
     // For XAudio2 patch
     #define __unaligned __attribute((__unaligned))
-    
+
     #define NTDDI_VERSION NTDDI_WIN10_RS2
-    
+
   </include-prolog>
 
-    <!-- SharpDX global naming -->
+  <!-- SharpDX global naming -->
   <naming>
     <short name="ASPECT">Aspect</short>
     <short name="BYTECODE">Bytecode</short>
@@ -77,7 +68,7 @@
     <short name="FORCED">Forced</short>
     <short name="FORCE">Force</short>
     <short name="REVOKED">Revoked</short>
-    <short name="OMAC">Omac</short>    
+    <short name="OMAC">Omac</short>
     <short name="SOUNDBANK">Soundbank</short>
     <short name="SOUND">Sound</short>
     <short name="NOTIFICATION">Notification</short>
@@ -128,7 +119,7 @@
     <short name="INVALIDATED">Invalidated</short>
     <short name="INVALIDATE">Invalidate</short>
     <short name="BUFFERSIZE">BufferSize</short>
-    <short name="OPTIONAL">Optional</short>    
+    <short name="OPTIONAL">Optional</short>
     <short name="SORT">Sort</short>
     <short name="AND">And</short>
     <short name="RGBA">Rgba</short>
@@ -329,8 +320,8 @@
     <short name="3D">3D</short>
     <short name="MS">Multisampled</short>
     <short name="RW">RW</short>
-    <short name="ARRAYSIZE">ArraySize</short>    
-    <short name="ARRAYSLICE">ArraySlice</short>    
+    <short name="ARRAYSIZE">ArraySize</short>
+    <short name="ARRAYSLICE">ArraySlice</short>
     <short name="ARRAYS">Arrays</short>
     <short name="ARRAY">Array</short>
     <short name="BUFFERS">Buffers</short>
@@ -444,7 +435,7 @@
     <short name="LINE">Line</short>
     <short name="LIST">List</short>
     <short name="LISTENER">Listener</short>
-    <short name="STRIP">Strip</short>    
+    <short name="STRIP">Strip</short>
     <short name="POINTERS">Pointers</short>
     <short name="POINTER">Pointer</short>
     <short name="POINTS">Points</short>
@@ -457,7 +448,7 @@
   </naming>
 
   <extension>
-  <define enum="System.IO.SeekOrigin" sizeof="4" underlying="System.UInt32"  />
+    <define enum="System.IO.SeekOrigin" sizeof="4" underlying="System.UInt32"  />
     <define struct="SharpDX.Mathematics.Interop.RawViewport" sizeof="16" />
     <define struct="SharpDX.Mathematics.Interop.RawViewportF" sizeof="16" />
     <define struct="SharpDX.DrawingRectangle" sizeof="16" />
@@ -482,9 +473,12 @@
     <define struct="SharpDX.Mathematics.Interop.RawPlane" sizeof="16" />
     <define struct="SharpDX.Mathematics.Interop.RawBox" sizeof="16" />
 
-    <define struct="SharpDX.Win32Native.TextMetric" sizeof="32"/> <!-- TODO calculate sizeof -->
-    <define struct="SharpDX.Win32Native.TextMetricA" sizeof="32"/> <!-- TODO calculate sizeof -->
-    <define struct="SharpDX.DirectWrite.GdiInterop.LogFont" sizeof="32"/> <!-- TODO calculate sizeof -->
+    <define struct="SharpDX.Win32Native.TextMetric" sizeof="32"/>
+    <!-- TODO calculate sizeof -->
+    <define struct="SharpDX.Win32Native.TextMetricA" sizeof="32"/>
+    <!-- TODO calculate sizeof -->
+    <define struct="SharpDX.DirectWrite.GdiInterop.LogFont" sizeof="32"/>
+    <!-- TODO calculate sizeof -->
 
     <define struct="SharpDX.DataRectangle" sizeof="12" />
     <define struct="SharpDX.DataBox" sizeof="16" />
@@ -499,7 +493,7 @@
     <define interface="SharpDX.Direct3D.Blob"/>
     <define interface="SharpDX.Win32.PropertyBag"/>
     <define struct="SharpDX.Win32.SecurityAttributes" sizeof="16" />
-		<define struct="SharpDX.Win32.NativeMessage" sizeof="28" />
+    <define struct="SharpDX.Win32.NativeMessage" sizeof="28" />
 
     <define struct="SharpDX.Win32.Variant" sizeof="16"/>
     <define struct="SharpDX.Win32.BitmapInfoHeader" sizeof="40"/>
@@ -523,7 +517,7 @@
   </bindings>
 
   <mapping>
-  
+
     <!--
     // *****************************************************************
     // Global documentation link
@@ -556,18 +550,7 @@
     // *****************************************************************
     -->
     <map method=".*::(.*)DescW?" name="$1Description" />
-    <map method=".*::(.*)Desc1" name="$1Description1" />
-    <map method=".*::(.*)Desc2" name="$1Description2" />
     <map method=".*GetType" name="GetTypeInfo" />
-
-    <!--
-    // Some global macros are overriding method names
-    -->
-    <map method=".*::GetTextMetricsW" name="GetTextMetrics" />
-    <map method=".*::PreloadTextW" name="PreloadText" />
-    <map method=".*::GetMessageW" name="GetMessage" />
-    <map method=".*::DrawTextW" name="DrawText" />
-    <map method=".*::GetGlyphIndicesW" name="GetGlyphIndices" />
 
   </mapping>
 </config>

@@ -27,12 +27,6 @@
   <assembly>SharpDX.D3DCompiler</assembly>
 
   <!-- D3DCompiler includes -->
-  <include file="d3dcompiler.h" attach="true">
-    <pre>
-      struct ID3D10Effect;
-    </pre>
-  </include>
-  <include file="d3d11shader.h" attach="true" />
   <include file="d3dcommon.h">
     <attach>D3D_PRIMITIVE</attach>
     <attach>D3D_CBUFFER_TYPE</attach>
@@ -54,11 +48,11 @@
     <attach>D3D_INCLUDE_TYPE</attach>
     <attach>D3DCreateBlob</attach>
   </include>
+  <include file="d3dcompiler.h" attach="true" />
 
   <context-set id="d3dcompiler-all">
     <context>sharpdx-d3dcompiler-ext</context>
     <context>d3dcompiler</context>
-    <context>d3d11shader</context>
   </context-set>
 
   <!-- D3DCompiler global naming -->
@@ -90,7 +84,6 @@
   
   <mapping>
     <context>d3dcommon</context>
-    <remove enum-item="D3D10_CBF_USERPACKED" />
     <map enum-item="D3D_PF(.*)" name-tmp="$1" />
     <context-clear />
     

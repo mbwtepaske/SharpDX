@@ -6,7 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{CC8DB471-0644-430D-9D4B-808A2475BEC0}"
 	ProjectSection(SolutionItems) = preProject
 		Source\Mapping.Direct3D1x.xml = Source\Mapping.Direct3D1x.xml
-		Source\Mapping.xml = Source\Mapping.xml
+		Source\Mapping.Root.xml = Source\Mapping.Root.xml
 		Source\MappingFiles.props = Source\MappingFiles.props
 		Source\SharedAssemblyInfo.cs = Source\SharedAssemblyInfo.cs
 	EndProjectSection
